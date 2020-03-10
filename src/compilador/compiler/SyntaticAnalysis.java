@@ -63,18 +63,12 @@ public class SyntaticAnalysis {
     }
     
     private void command() {
-        if(first.getFirst_atribution().contains(nextToken.getToken())) {
-            //nextToken = la.nextToken();
+        if(first.getFirst_atribution().contains(nextToken.getToken()))
             atributtion();
-        }
-        else if(first.getFirst_decision().contains(nextToken.getToken())){
-            //nextToken = la.nextToken();
+        else if(first.getFirst_decision().contains(nextToken.getToken()))
             decision();
-        }            
-        else if(first.getFirst_repetition().contains(nextToken.getToken())) {
-            //nextToken = la.nextToken();
+        else if(first.getFirst_repetition().contains(nextToken.getToken()))
             repetition();
-        }
         else {
             addError("Cade o comando que deveria estar aqui?");
             la.retrocesso(nextToken);
@@ -83,7 +77,6 @@ public class SyntaticAnalysis {
         
         if(first.getFirst_command().contains(nextToken.getToken()))
             command();
-        
     }
     
     private void atributtion() {

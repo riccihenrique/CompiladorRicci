@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="796.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.view.FXMLMainController">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="796.0" spacing="40.0" style="-fx-background-color: #353537;">
+         <opaqueInsets>
+            <Insets left="20.0" right="10.0" />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <children>
+            <JFXButton fx:id="btNovo" onAction="#NovoArquivo" prefHeight="32.0" prefWidth="32.0" style="-fx-background-image: url('icons/new.png');" text="" />
+            <JFXButton fx:id="btAbir" onAction="#AbiriArquivo" prefHeight="32.0" prefWidth="32.0" style="-fx-background-image: url('icons/open.png');" />
+            <JFXButton fx:id="btSalvar" onAction="#SalvarArquivo" prefHeight="32.0" prefWidth="32.0" style="-fx-background-image: url('icons/save.png');" />
+            <JFXButton fx:id="btCompilar" onAction="#Compilar" prefHeight="32.0" prefWidth="32.0" style="-fx-background-image: url('icons/play.png');" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+      <HBox prefHeight="413.0" prefWidth="742.0">
+         <children>
+            <TabPane fx:id="tbpFiles" prefHeight="391.0" prefWidth="798.0" style="-fx-background-color: #282828; -fx-opacity: 200;" tabClosingPolicy="UNAVAILABLE" />
+         </children>
+      </HBox>
+      <TabPane fx:id="tbpSaida" prefHeight="138.0" prefWidth="600.0" style="-fx-background-color: #353537; -fx-opacity: 200;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab style="-fx-background-color: #353538; -fx-text-base-color: white;" text="Saída">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #353538;">
+                     <children>
+                        <JFXTextArea fx:id="taErrors" prefHeight="87.0" prefWidth="796.0" style="-fx-text-fill: #fdfdfd; -fx-background-color: #353538;" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</VBox>

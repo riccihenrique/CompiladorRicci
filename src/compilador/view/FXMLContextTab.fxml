@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import org.fxmisc.richtext.CodeArea?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="372.0" prefWidth="821.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.view.FXMLContextTabController">
+   <children>
+      <CodeArea fx:id="caCode" prefHeight="372.0" prefWidth="821.0" style="-fx-background-color: #29292a; -fx-text-fill: #fdfdfd; -fx-stroke: white;" />
+   </children>
+</AnchorPane>

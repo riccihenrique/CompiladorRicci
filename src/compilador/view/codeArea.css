@@ -1,0 +1,39 @@
+.styled-text-area .selection {
+    -fx-fill: #708d89;
+}
+
+.text {
+    -fx-fill: #fdfdfd;
+}
+
+.lineno {
+ -fx-background-color: #29292a;
+}
+
+.comment {
+	-fx-fill: greenyellow;
+}
+
+.command {
+    -fx-fill: orange;
+}
+
+.type {
+    -fx-fill: #87a1b3;
+}
+
+.keyword {
+    -fx-fill: #e69e19;
+}
+
+.semicolon {
+    -fx-fill: #87a1b3;
+}
+
+.string {
+    -fx-fill: #b264d9;
+}
+
+.char {
+    -fx-fill: #ffdb58;
+}

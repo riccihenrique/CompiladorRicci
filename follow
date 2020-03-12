@@ -1,0 +1,26 @@
+<Main> ::= {"$"}
+<Var> ::= {letra, "if", "while", "for"}
+<Declaration> ::= {"]"}
+<Type> ::= {letra}
+<End Command> ::= {"int", "double", "char", "string", "bool", "while", "for", letra}
+<Command> ::= {"}", letra, "if", "while", "for"}
+<Atributtion> ::= {";", ")"}
+<Operation> ::= {";"}
+<Arithmetic Operator> ::= {letra, num}
+<Decision> ::= {letra, "if", "while", "for"}
+<Repetition> ::= {letra, "if", "while", "for"}
+<If Statement> ::= {letra, "if", "while", "for"}
+<Condition> ::= {")", ";"}
+<While Statement> ::= {letra, "if", "while", "for"}
+<For Statement> ::= {letra, "if", "while", "for"}
+<Logic Condition> ::= {")", ";"}
+<Logic Condition Plus> ::= {")", ";", "&&", "||"}
+<Relational Condition> ::= {")", ";"}
+<Relational Operator> ::= {num, letra}
+<Variable> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
+<Numeric Value> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}
+<Boolean Value> ::= {";", ")", "&&", "||"}
+<Char Value> ::= {";"}
+<String Value> ::= {";"}
+<Digit> ::= {"'"}
+<Charactere> ::= "/"" 

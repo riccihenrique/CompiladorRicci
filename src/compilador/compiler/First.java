@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class First {
-    private List<String> first_main;
+    private final List<String> first_main;
     private List<String> first_declaration;
     private List<String> first_command;
+    private List<String> first_atribution;
+    private List<String> first_operation;
     private List<String> first_decision;
     private List<String> first_repetition;
     private List<String> first_if;
     private List<String> first_condition;
     private List<String> first_while;
     private List<String> first_for;
-    private List<String> first_logicCondition;
-    private List<String> first_relationalCondition;
-    private List<String> first_atribution;
+    private List<String> first_logicCondition;   
+  
     private List<String> first_logicPlus;
+    private List<String> first_relationalCondition;
     
     
     public First() {
@@ -33,6 +35,7 @@ public class First {
         first_relationalCondition = new ArrayList<>();
         first_atribution = new ArrayList<>();
         first_logicPlus = new ArrayList<>();
+        first_operation = new ArrayList<>();
         
         first_main.add("t_main");
         
@@ -55,8 +58,8 @@ public class First {
         first_relationalCondition.add("t_num");
         first_relationalCondition.add("t_id");
         
-        first_logicCondition.add("t_relational");
-        first_logicCondition.add("t_bool");
+        
+        first_logicCondition.add("t_bool");      
         first_logicCondition.add("t_logic");
         first_logicCondition.addAll(first_relationalCondition);
         
@@ -65,6 +68,9 @@ public class First {
         first_atribution.add("t_id");
         
         first_logicPlus.add("t_logic");
+        
+        first_operation.add("t_id");
+        first_operation.add("t_num");
     }
 
     public List<String> getFirst_main() {
@@ -117,5 +123,9 @@ public class First {
 
     public List<String> getFirst_logicPlus() {
         return first_logicPlus;
+    }
+
+    public List<String> getFirst_operation() {
+        return first_operation;
     }
 }

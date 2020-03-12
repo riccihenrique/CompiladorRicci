@@ -216,7 +216,7 @@ private TabPane tbpFiles;
         
         String msg = "";
         List<Error> err = compiler.getErrors();
-        if(err.isEmpty())
+        if(/*compiler.finished() && */err.isEmpty())
             msg = "Ahhhh, compilou meu irmão!!!!!!";
         else
             for(Error e : err)

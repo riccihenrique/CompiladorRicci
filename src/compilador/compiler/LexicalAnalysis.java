@@ -239,4 +239,8 @@ public class LexicalAnalysis {
         for(Token t: tokens)
             System.out.println(t);
     }
+    
+    public boolean finished() {
+        return countLetters >= code.length();
+    }
 }

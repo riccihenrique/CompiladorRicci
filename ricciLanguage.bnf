@@ -1,0 +1,114 @@
+<Main> ::= "ricci" "{" [<Var>] <Command> "}"
+
+<Var> ::= "var" "[" <Declaration> "]"
+
+<Declaration> ::= <Type> <Variable> <End Command> | 
+                <Type> <Variable> <End Command> <Declaration>
+
+<Type> ::= "int" | "double" | "char" | "string" | "bool"
+
+<End Command> ::= ";"
+
+<Command> ::= (<Atributtion> <End Command> | <Decision> | <Repetition>) | 
+            (<Atributtion> <End Command> | <Decision> | <Repetition>) <Command>
+
+<Atributtion> ::= ((<Variable> "=" (<Variable> | <Numeric Value> | <Operation> | <Char Value> | <Boolean Value> | <String Value>) | 
+                (<Variable>"++" | <Variable>"--")) <End Command>
+
+<Operation> ::= (<Variable> | <Numeric Value>) <Arithmetic Operator> (<Variable> | <Numeric Value>)
+
+<Arithmetic Operator> ::= "+" | "-" | "*" | "/"
+
+<Decision> ::= <If Statement>
+
+<Repetition> ::= <While Statement> | <For Statement>
+
+<If Statement> ::= "if" "(" <Condition> ")" "{" <Command> "}" ["else" "{" <Command> "}"]
+
+<Condition> ::= <Logic Condition> | <Relational Condition>
+
+<While Statement> ::= "while" "(" <Condition> ")" "{" <Command> "}"
+
+<For Statement> ::= "for" "(" <Atributtion><End Command><Condition><End Command><Atributtion>")" "{" <Command> "}"
+
+<Logic Condition> ::= ["!"] (<Variable> | <Boolean value> | <Relational Condition>) [<Logic Condition Plus>]
+
+<Logic Condition Plus> ::= "(&&" | "||" ) ["!"] (<Relational Condition> | <Variable> | <Boolean value>) | 
+                    <Logic Condition Plus>
+
+<Relational Condition> ::= (<Numeric Value> | <Variable>) <Relational Operator> (<Numeric Value> | <Variable>)
+
+<Relational Operator> ::= ">" | "<"| ">= "| "<=" | "==" | "!="
+
+<Variable> ::= (a..z | _)(a..z | _ | 0..9)*
+
+<Numeric Value> 0..9+ | 0..9+"."0..9+ | "-"0..9+ | "-"0..9+"."0..9+
+
+<Boolean Value> :: "true" | "false"
+
+<Char Value> "'" (<Charactere> | <Digit>) "'"
+
+<String Value> """ (a..z | _ | ! | @ | $ | % | & | * | ( | ) | = | + | - | _ | / | . | , | ; | : | ? | 0..9)* """
+
+<Digit> ::= 0..9
+
+<Charactere> ::= a..z | A..Z
+
+<Keyword> ::= bool | case | char | double | else | for | if | int | while | main | string
+
+/************    FIRST    ************/
+
+<Main> ::= {"ricci"}
+<Var> ::= {"var"}
+<Declaration> ::= {"int", "double", "char", "string", "bool"}
+<Type> ::= {"int", "double", "char", "string", "bool"}
+<End Command> ::= {";"}
+<Command> ::= {letra, "if", "while", "for"}
+<Atributtion> ::= {letra}
+<Operation> ::= {letra, num}
+<Arithmetic Operator> ::= {"+", "-", "*", "/"}
+<Decision> ::= {"if"}
+<Repetition> ::= {"while", "for"}
+<If Statement> ::= {"if"}
+<Condition> ::= {"!", letra, "true", "false", num}
+<While Statement> ::= {"while"}
+<For Statement> ::= {"for"}
+<Logic Condition> ::= {"!", letra, "true", "false", num}
+<Logic Condition Plus> ::= {"&&", "||"}
+<Relational Condition> ::= {num, letra}
+<Relational Operator> ::= {">", "<", ">=", "<=", "==", "!="}
+<Variable> ::= {letra}
+<Numeric Value> ::= {num}
+<Boolean Value> ::= {"true", "false"}
+<Char Value> ::= {"'"}
+<String Value> ::= {"\""}
+<Digit> ::= {num}
+<Charactere> ::= {letra}
+
+/***********    FOLLOW    ***********/
+<Main> ::= {"$"}
+<Var> ::= {letra, "if", "while", "for"}
+<Declaration> ::= {"]"}
+<Type> ::= {letra}
+<End Command> ::= {"int", "double", "char", "string", "bool", "while", "for", letra}
+<Command> ::= {"}", letra, "if", "while", "for"}
+<Atributtion> ::= {";", ")", letra, "if", "while", "for"}
+<Operation> ::= {";"}
+<Arithmetic Operator> ::= {letra, num}
+<Decision> ::= {"}", letra, "if", "while", "for"}
+<Repetition> ::= {"}", letra, "if", "while", "for"}
+<If Statement> ::= {"}", letra, "if", "while", "for"}
+<Condition> ::= {")", ";"}
+<While Statement> ::= {"}", letra, "if", "while", "for"}
+<For Statement> ::= {"}", letra, "if", "while", "for"}
+<Logic Condition> ::= {")", ";"}
+<Logic Condition Plus> ::= {")", ";", "&&", "||"}
+<Relational Condition> ::= {")", ";"}
+<Relational Operator> ::= {num, letra}
+<Variable> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
+<Numeric Value> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}
+<Boolean Value> ::= {";", ")", "&&", "||"}
+<Char Value> ::= {";"}
+<String Value> ::= {";"}
+<Digit> ::= {"'"}
+<Charactere> ::= "/"" 

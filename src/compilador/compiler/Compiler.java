@@ -10,6 +10,7 @@ public class Compiler {
     
     private String code = "";
     private List<Error> errors;
+    private SyntaticAnalysis sa;
     
     public Compiler(String filePath) throws IOException {  
         String aux = "";
@@ -28,7 +29,7 @@ public class Compiler {
     }
     
     public void Compile() {
-        SyntaticAnalysis sa = new SyntaticAnalysis(code);
+        sa = new SyntaticAnalysis(code);
         sa.Analyse();        
         errors = sa.getErrors();
     }
@@ -36,11 +37,8 @@ public class Compiler {
     public List<Error> getErrors() {
         return errors;
     }
+    
+    public boolean finished() {
+        return sa.finished();
+    }
 }
-
-
-/* 
-    - Qual analisador coloca as variaveis na memoria?
-    - Levar o caso do declaration "Como repetir mesmo se o ultimo caractere esta faltando"
-    - 
-*/

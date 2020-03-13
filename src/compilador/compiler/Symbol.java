@@ -27,11 +27,13 @@ public class Symbol {
         symbols.add(new Token("t_relational", ">="));
         symbols.add(new Token("t_relational", "<="));
         symbols.add(new Token("t_relational", "!="));
+        symbols.add(new Token("t_relational", "=="));
         symbols.add(new Token("t_att", "++"));
         symbols.add(new Token("t_att", "--"));
         symbols.add(new Token("t_end", ";"));
         symbols.add(new Token("t_\"", "\""));
         symbols.add(new Token("t_'", "'"));
+        symbols.add(new Token("t_$", "$"));
     }      
     
     public List<Token> getSymbols() {

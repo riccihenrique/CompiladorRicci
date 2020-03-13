@@ -55,13 +55,13 @@ public class First {
         first_repetition.addAll(first_for);
         first_repetition.addAll(first_while);
         
-        first_relationalCondition.add("t_num");
-        first_relationalCondition.add("t_id");
+        first_relationalCondition.add("t_$");        
         
-        
-        first_logicCondition.add("t_bool");      
+        first_logicCondition.add("t_bool");
+        first_logicCondition.add("t_id");
         first_logicCondition.add("t_logic");
         first_logicCondition.addAll(first_relationalCondition);
+        
         
         first_condition.addAll(first_logicCondition);
         

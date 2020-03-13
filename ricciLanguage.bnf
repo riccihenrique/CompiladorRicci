@@ -13,7 +13,7 @@
             (<Atributtion> <End Command> | <Decision> | <Repetition>) <Command>
 
 <Atributtion> ::= ((<Variable> "=" (<Variable> | <Numeric Value> | <Operation> | <Char Value> | <Boolean Value> | <String Value>) | 
-                (<Variable>"++" | <Variable>"--")) <End Command>
+                (<Variable>"+=" | <Variable>"-=")) <End Command>
 
 <Operation> ::= (<Variable> | <Numeric Value>) <Arithmetic Operator> (<Variable> | <Numeric Value>)
 
@@ -33,10 +33,10 @@
 
 <Logic Condition> ::= ["!"] (<Variable> | <Boolean value> | <Relational Condition>) [<Logic Condition Plus>]
 
-<Logic Condition Plus> ::= "(&&" | "||" ) ["!"] (<Relational Condition> | <Variable> | <Boolean value>) | 
+<Logic Condition Plus> ::= ("&&" | "||" ) ["!"] (<Relational Condition> | <Variable> | <Boolean value>) | 
                     <Logic Condition Plus>
 
-<Relational Condition> ::= (<Numeric Value> | <Variable>) <Relational Operator> (<Numeric Value> | <Variable>)
+<Relational Condition> ::= "$"(<Numeric Value> | <Variable>) <Relational Operator> (<Numeric Value> | <Variable>)"$"
 
 <Relational Operator> ::= ">" | "<"| ">= "| "<=" | "==" | "!="
 
@@ -73,9 +73,9 @@
 <Condition> ::= {"!", letra, "true", "false", num}
 <While Statement> ::= {"while"}
 <For Statement> ::= {"for"}
-<Logic Condition> ::= {"!", letra, "true", "false", num}
+<Logic Condition> ::= {"!", letra, "true", "false", num, "<"}
 <Logic Condition Plus> ::= {"&&", "||"}
-<Relational Condition> ::= {num, letra}
+<Relational Condition> ::= {"$"}
 <Relational Operator> ::= {">", "<", ">=", "<=", "==", "!="}
 <Variable> ::= {letra}
 <Numeric Value> ::= {num}
@@ -103,7 +103,7 @@
 <For Statement> ::= {"}", letra, "if", "while", "for"}
 <Logic Condition> ::= {")", ";"}
 <Logic Condition Plus> ::= {")", ";", "&&", "||"}
-<Relational Condition> ::= {")", ";"}
+<Relational Condition> ::= {")", ";", "&&", "||"}
 <Relational Operator> ::= {num, letra}
 <Variable> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
 <Numeric Value> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}

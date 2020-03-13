@@ -1,5 +1,14 @@
 ricci {
-    if
-
-
+    for(i = 1; a; a++) {
+               for(i = 1; a; a++) {
+           if(a) {
+                if(true) {
+                    a = 1;
+                }
+                else {
+                    r++;
+                }
+            }
+        }
+    }
 }

@@ -43,11 +43,12 @@ public class Follow {
         follow_command.add("t_while");
         follow_command.add("t_for");
         
-        follow_atribution.add("t_;");
+        follow_atribution.add("t_end");
         follow_atribution.add("t_)");
         
         
         follow_operation.add("t_)");
+        follow_operation.add("t_end");
         
         follow_decision.addAll(follow_command);
         
@@ -64,10 +65,9 @@ public class Follow {
         follow_logicCondition.addAll(follow_atribution);
         
         follow_logicPlus.addAll(follow_logicCondition);
-        follow_logicPlus.add("&&");
-        follow_logicPlus.add("||");
+        follow_logicPlus.add("t_logic");
         
-        follow_relationalCondition.addAll(follow_atribution);
+        follow_relationalCondition.addAll(follow_logicPlus);
         
         follow_atribution.addAll(follow_command);
     }

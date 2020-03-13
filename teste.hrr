@@ -1,14 +1,3 @@
 ricci {
-    for(i = 1; a; a++) {
-               for(i = 1; a; a++) {
-           if(a) {
-                if(true) {
-                    a = 1;
-                }
-                else {
-                    r++;
-                }
-            }
-        }
-    }
+   for(int a; $d < 2$; d)
 }

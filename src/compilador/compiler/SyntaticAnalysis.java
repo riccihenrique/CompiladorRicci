@@ -57,6 +57,7 @@ public class SyntaticAnalysis {
         }
         else
             addError("Que tipo de dado é esse rapaz?");
+        
         if(!flag)    
             while(!first.getFirst_declaration().contains(nextToken.getToken()) && !follow.getFollow_declaration().contains(nextToken.getToken()))
                 nextToken();
@@ -84,6 +85,9 @@ public class SyntaticAnalysis {
         if(first.getFirst_command().contains(nextToken.getToken()))
             if(!nextToken.getToken().equals("t_}")) 
                 command();
+        
+        //if(!follow.getFollow_command().contains(nextToken.getToken()))
+            //addError("Trecho não esperado aqui");
     }
     
     private void atributtion() {
@@ -160,14 +164,14 @@ public class SyntaticAnalysis {
     private void decision() {
         if_statement();
         
-        while(!first.getFirst_decision().contains(nextToken.getToken()) && !follow.getFollow_decision().contains(nextToken.getToken()))
+        /*while(!first.getFirst_decision().contains(nextToken.getToken()) && !follow.getFollow_decision().contains(nextToken.getToken()))
             nextToken();
         
         if(!follow.getFollow_decision().contains(nextToken.getToken()))
             if(first.getFirst_decision().contains(nextToken.getToken()))
                 command();
             else
-                addError("Simbolo nao esperado aqui");
+                addError("Simbolo nao esperado aqui");*/
     }
     
     private void logic() {
@@ -265,8 +269,8 @@ public class SyntaticAnalysis {
             logic();       
         else {
             addError("Isso não parece ser uma condição...");
-            while(!follow.getFollow_condition().contains(nextToken.getToken()))
-                nextToken();
+            //while(!follow.getFollow_condition().contains(nextToken.getToken()))
+             //   nextToken();
         }
     }
 
@@ -318,14 +322,14 @@ public class SyntaticAnalysis {
         forS();
         whileS();
         
-        while(!first.getFirst_repetition().contains(nextToken.getToken()) && !follow.getFollow_repetition().contains(nextToken.getToken()))
+        /*while(!first.getFirst_repetition().contains(nextToken.getToken()) && !follow.getFollow_repetition().contains(nextToken.getToken()))
             nextToken();
         
         if(!follow.getFollow_repetition().contains(nextToken.getToken()))
             if(first.getFirst_repetition().contains(nextToken.getToken()))
                 command();
             else
-                addError("Simbolo nao esperado aqui");
+                addError("Simbolo nao esperado aqui");*/
     }
     
     private void forS() {
@@ -347,8 +351,8 @@ public class SyntaticAnalysis {
                 else
                     addError("Isso nao se parece com uma atribuiçao");
                 
-                while(!nextToken.getToken().equals("t_)")) // Adaptaçao tecnca
-                    nextToken();
+                /*while(!nextToken.getToken().equals("t_)")) // Adaptaçao tecnca
+                    nextToken();*/
                 
                 if(nextToken.getToken().equals("t_)")) {
                     nextToken();

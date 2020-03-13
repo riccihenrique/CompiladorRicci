@@ -58,12 +58,13 @@ public class LexicalAnalysis {
                     }
                 else if(c == '*') {                   
                    while(c != '/') {
-                        c = code.charAt(countLetters);
+                        c = code.charAt(++countLetters);
                         while(c != '*') {
                             addCounters();
                             c = code.charAt(countLetters);
                         }
                         addCounters();
+                        c = code.charAt(countLetters);
                    }
                 }
             }
@@ -150,7 +151,7 @@ public class LexicalAnalysis {
                         tokens.add(t);
 
                         if(!(tokenAux.startsWith("\"") && tokenAux.endsWith("\"")))
-                            errors.add(new Error("Essa char está estranho", line, column));
+                            errors.add(new Error("Essa string está estranho", line, column));
 
                         addCounters();
                         return t; 
@@ -178,7 +179,7 @@ public class LexicalAnalysis {
                 }
             }
         }
-        return null;
+        return new Token("t_abort", "abortou");
     }
     
     private void addCounters() {

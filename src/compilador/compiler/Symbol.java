@@ -17,7 +17,7 @@ public class Symbol {
         symbols.add(new Token("t_op", "-"));
         symbols.add(new Token("t_op", "+"));
         symbols.add(new Token("t_op", "/"));
-        symbols.add(new Token("t_.", "."));
+       // symbols.add(new Token("t_.", "."));
         symbols.add(new Token("t_att", "="));
         symbols.add(new Token("t_logic", "&&"));
         symbols.add(new Token("t_logic", "||"));

@@ -25,6 +25,7 @@ import compilador.compiler.Error;
 import compilador.compiler.Token;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +44,7 @@ public class FXMLMainController implements Initializable {
     @FXML
 private TabPane tbpFiles;
     
-    private String path = "";
+    private List<String> paths;
     @FXML
     private JFXTextArea taErrors;
     @FXML
@@ -114,11 +115,14 @@ private TabPane tbpFiles;
             }
         };
         
-        path = "./teste.hrr";
-        AbiriArquivo(null);
+        paths = new ArrayList<>();
+        
+        /*path = "./teste.hrr";
+        AbiriArquivo(null);*/
     }    
         
     private void createTab(String title, boolean newFile) {
+        paths.add("");
         Tab t = new Tab(title);
         t.setStyle("-fx-text-base-color:#fdfdfd;-fx-background-color:#353538");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLContextTab.fxml"));       
@@ -142,18 +146,19 @@ private TabPane tbpFiles;
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HRR File (*.hrr)", "*.hrr"));
         File file;
-        if(path == "")
+        //if(paths.get(getIndex()) == "")
             file = chooser.showOpenDialog(null);
-        else
-            file = new File(path);
+        //else
+            //file = new File(paths.get(getIndex()));
         
         if(file != null) {
             try {
                 FileReader arq = new FileReader(file);
                 BufferedReader reader = new BufferedReader(arq);
-                path = file.getAbsolutePath();                
                 
                 createTab(file.getName(), false);
+                paths.set(tbpFiles.getTabs().size() - 1, file.getAbsolutePath());
+                
                 tbpFiles.getSelectionModel().select(tbpFiles.getTabs().size() - 1);
                 for(Node n : ((AnchorPane)tbpFiles.getTabs().get(tbpFiles.getTabs().size() - 1).getContent()).getChildren()) {
                     if(n instanceof CodeArea) {
@@ -181,12 +186,12 @@ private TabPane tbpFiles;
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HRR File (*.hrr)", "*.hrr"));
         File file;
-        if(path.equals("")) {
+        if(paths.get(getIndex()).equals("")) {
             file = chooser.showSaveDialog(null);
-            path = file.getAbsolutePath();
+            paths.set(getIndex(), file.getAbsolutePath());
         }
         else
-           file = new File(path);        
+           file = new File(paths.get(getIndex()));        
 
         if(file != null){
             try {
@@ -211,7 +216,7 @@ private TabPane tbpFiles;
     @FXML
     private void Compilar(ActionEvent event) throws IOException {
         SalvarArquivo(event);
-        Compiler compiler = new Compiler(path);
+        Compiler compiler = new Compiler(paths.get(getIndex()));
         compiler.Compile();
         
         String msg = "";
@@ -226,11 +231,15 @@ private TabPane tbpFiles;
         
         msg = "";
         if(compiler.finished() && err.isEmpty())
-            msg = "Ahhhh, compilou meu irmão!!!!!!";
+            msg = "Compilaçao executada com sucesso!!!!!!";
         else
             for(Error e : err)
                 msg += e + "\n";
         taErrors.clear();
         taErrors.setText(msg);
+    }
+    
+    private int getIndex() {
+        return tbpFiles.getSelectionModel().getSelectedIndex();
     }
 }

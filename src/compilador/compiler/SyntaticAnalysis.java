@@ -239,6 +239,9 @@ public class SyntaticAnalysis {
             t_logicC();       
         else 
             addError("Isso não parece ser uma condição...");
+        
+        while(nextToken != null && !follow.getT_condition().contains(nextToken.getToken()))
+            nextToken();
     }
 
     private void t_if() {

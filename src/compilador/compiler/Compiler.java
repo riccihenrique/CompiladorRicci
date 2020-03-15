@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Compiler {
@@ -12,7 +13,8 @@ public class Compiler {
     private List<Error> errors;
     private SyntaticAnalysis sa;
     
-    public Compiler(String filePath) throws IOException {  
+    public Compiler(String filePath) throws IOException {
+        errors = new ArrayList<>();
         String aux = "";
         File file = new File(filePath);
         FileReader arq;
@@ -30,8 +32,12 @@ public class Compiler {
     
     public void Compile() {
         sa = new SyntaticAnalysis(code);
-        sa.Analyse();        
-        errors = sa.getErrors();
+        sa.Analyse();
+       
+        errors.addAll(sa.getErrors());
+        
+        if(errors.isEmpty() && !sa.finished())
+            errors.add(new Error("O programa nao pode ser compilado", 1, 1));        
     }
     
     public List<Error> getErrors() {
@@ -40,5 +46,9 @@ public class Compiler {
     
     public boolean finished() {
         return sa.finished();
+    }
+
+    public List<Token> getTableTokens() {
+        return sa.getTable();
     }
 }

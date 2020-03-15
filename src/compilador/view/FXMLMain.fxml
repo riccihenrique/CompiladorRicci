@@ -39,10 +39,19 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #353538;">
                      <children>
-                        <JFXTextArea fx:id="taErrors" prefHeight="87.0" prefWidth="796.0" style="-fx-text-fill: #fdfdfd; -fx-background-color: #353538;" />
+                        <JFXTextArea fx:id="taErrors" editable="false" prefHeight="87.0" prefWidth="796.0" style="-fx-text-fill: #fdfdfd; -fx-background-color: #353538;" />
                      </children></AnchorPane>
             </content>
           </Tab>
+            <Tab style="-fx-background-color: #353538; -fx-text-base-color: white;" text="Tabela">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #353538;">
+                     <children>
+                        <JFXTextArea fx:id="taTabela" editable="false" prefHeight="87.0" prefWidth="796.0" style="-fx-text-fill: #fdfdfd; -fx-background-color: #353538;" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>

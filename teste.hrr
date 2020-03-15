@@ -1,3 +1,6 @@
 ricci {
-   for(int a; $d < 2$; d)
+    a ++;
+    if(a && d  {
+        a = 1;
+    }
 }

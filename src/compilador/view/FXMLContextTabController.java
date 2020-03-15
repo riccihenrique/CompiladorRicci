@@ -114,6 +114,6 @@ public class FXMLContextTabController implements Initializable {
     void newFile(boolean newFile) {
         this.newFile = newFile;
         if(newFile)
-            caCode.appendText("main {\n    var [\n\n    ]\n}");
+            caCode.appendText("ricci {\n    var [\n\n    ]\n}");
     }
 }

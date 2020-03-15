@@ -1,114 +1,118 @@
-<Main> ::= "ricci" "{" [<Var>] <Command> "}"
+<t_main> ::= "ricci" "{" [<t_var>] <t_command> "}"
 
-<Var> ::= "var" "[" <Declaration> "]"
+<t_var> ::= "var" "[" <t_declaration> "]"
 
-<Declaration> ::= <Type> <Variable> <End Command> | 
-                <Type> <Variable> <End Command> <Declaration>
+<t_declaration> ::= <t_type> <t_id> <t_end> | 
+                <t_type> <t_id> <t_end> <t_declaration>
 
-<Type> ::= "int" | "double" | "char" | "string" | "bool"
+<t_type> ::= "int" | "double" | "char" | "string" | "bool"
 
-<End Command> ::= ";"
+<t_end> ::= ";"
 
-<Command> ::= (<Atributtion> <End Command> | <Decision> | <Repetition>) | 
-            (<Atributtion> <End Command> | <Decision> | <Repetition>) <Command>
+<t_command> ::= (<t_att> <t_end> | <t_decision> | <t_repetition>) | 
+            (<t_att> <t_end> | <t_decision> | <t_repetition>) <t_command>
 
-<Atributtion> ::= ((<Variable> "=" (<Variable> | <Numeric Value> | <Operation> | <Char Value> | <Boolean Value> | <String Value>) | 
-                (<Variable>"+=" | <Variable>"-=")) <End Command>
+<t_att> ::= (<t_id> "=" (<t_id> | <t_num> | <t_operation> | <t_char> | <t_bool> | <t_str>) | 
+            <t_id>"++" | <t_id>"--") <t_end>
 
-<Operation> ::= (<Variable> | <Numeric Value>) <Arithmetic Operator> (<Variable> | <Numeric Value>)
+<t_operation> ::= (<t_id> | <t_num>) <t_op> (<t_id> | <t_num>)
 
-<Arithmetic Operator> ::= "+" | "-" | "*" | "/"
+<t_op> ::= "+" | "-" | "*" | "/"
 
-<Decision> ::= <If Statement>
+<t_decision> ::= <t_if>
 
-<Repetition> ::= <While Statement> | <For Statement>
+<t_repetition> ::= <t_while> | <t_for>
 
-<If Statement> ::= "if" "(" <Condition> ")" "{" <Command> "}" ["else" "{" <Command> "}"]
+<t_if> ::= "if" "(" <t_condition> ")" "{" <t_command> "}" [<t_else>]
 
-<Condition> ::= <Logic Condition> | <Relational Condition>
+<t_else> ::= "else" "{" <t_command> "}"
 
-<While Statement> ::= "while" "(" <Condition> ")" "{" <Command> "}"
+<t_condition> ::= <t_logicC> | <t_relationalC>
 
-<For Statement> ::= "for" "(" <Atributtion><End Command><Condition><End Command><Atributtion>")" "{" <Command> "}"
+<t_while> ::= "while" "(" <t_condition> ")" "{" <t_command> "}"
 
-<Logic Condition> ::= ["!"] (<Variable> | <Boolean value> | <Relational Condition>) [<Logic Condition Plus>]
+<t_for> ::= "for" "(" <t_att><t_end><t_condition><t_end><t_att><t_end>")" "{" <t_command> "}"
 
-<Logic Condition Plus> ::= ("&&" | "||" ) ["!"] (<Relational Condition> | <Variable> | <Boolean value>) | 
-                    <Logic Condition Plus>
+<t_logicC> ::= ["!"] (<t_id> | <t_bool> | <t_relationalC>) [<t_logicCPlus>]
 
-<Relational Condition> ::= "$"(<Numeric Value> | <Variable>) <Relational Operator> (<Numeric Value> | <Variable>)"$"
+<t_logicCPlus> ::= ("&&" | "||" ) ["!"] (<t_relationalC> | <t_id> | <t_bool>) | 
+                    <t_logicCPlus>
 
-<Relational Operator> ::= ">" | "<"| ">= "| "<=" | "==" | "!="
+<t_relationalC> ::= "$"(<t_num> | <t_id>) <t_relational> (<t_num> | <t_id>)"$"
 
-<Variable> ::= (a..z | _)(a..z | _ | 0..9)*
+<t_relational> ::= ">" | "<"| ">= "| "<=" | "==" | "!="
 
-<Numeric Value> 0..9+ | 0..9+"."0..9+ | "-"0..9+ | "-"0..9+"."0..9+
+<t_id> ::= (a..z | _)(a..z | _ | 0..9)*
 
-<Boolean Value> :: "true" | "false"
+<t_num> 0..9+ | 0..9+"."0..9+ | "-"0..9+ | "-"0..9+"."0..9+
 
-<Char Value> "'" (<Charactere> | <Digit>) "'"
+<t_bool> :: "true" | "false"
 
-<String Value> """ (a..z | _ | ! | @ | $ | % | & | * | ( | ) | = | + | - | _ | / | . | , | ; | : | ? | 0..9)* """
+<t_char> "'" (<t_character> | <t_dig>) "'"
 
-<Digit> ::= 0..9
+<t_str> """ (a..z | _ | ! | @ | $ | % | & | * | ( | ) | = | + | - | _ | / | . | , | ; | : | ? | 0..9)* """
 
-<Charactere> ::= a..z | A..Z
+<t_dig> ::= 0..9
+
+<t_character> ::= a..z | A..Z
 
 <Keyword> ::= bool | case | char | double | else | for | if | int | while | main | string
 
 /************    FIRST    ************/
 
-<Main> ::= {"ricci"}
-<Var> ::= {"var"}
-<Declaration> ::= {"int", "double", "char", "string", "bool"}
-<Type> ::= {"int", "double", "char", "string", "bool"}
-<End Command> ::= {";"}
-<Command> ::= {letra, "if", "while", "for"}
-<Atributtion> ::= {letra}
-<Operation> ::= {letra, num}
-<Arithmetic Operator> ::= {"+", "-", "*", "/"}
-<Decision> ::= {"if"}
-<Repetition> ::= {"while", "for"}
-<If Statement> ::= {"if"}
-<Condition> ::= {"!", letra, "true", "false", num}
-<While Statement> ::= {"while"}
-<For Statement> ::= {"for"}
-<Logic Condition> ::= {"!", letra, "true", "false", num, "<"}
-<Logic Condition Plus> ::= {"&&", "||"}
-<Relational Condition> ::= {"$"}
-<Relational Operator> ::= {">", "<", ">=", "<=", "==", "!="}
-<Variable> ::= {letra}
-<Numeric Value> ::= {num}
-<Boolean Value> ::= {"true", "false"}
-<Char Value> ::= {"'"}
-<String Value> ::= {"\""}
-<Digit> ::= {num}
-<Charactere> ::= {letra}
+<t_main> ::= {"ricci"}
+<t_id> ::= {"var"}
+<t_declaration> ::= {"int", "double", "char", "string", "bool"}
+<t_type> ::= {"int", "double", "char", "string", "bool"}
+<t_end> ::= {";"}
+<t_command> ::= {variavel, "if", "while", "for"}
+<t_att> ::= {variavel}
+<t_operation> ::= {variavel, num}
+<t_op> ::= {"+", "-", "*", "/"}
+<t_decision> ::= {"if"}
+<t_repetition> ::= {"while", "for"}
+<t_if> ::= {"if"}
+<t_else> :: = {"else"}
+<t_condition> ::= {"!", variavel, "true", "false", num}
+<t_while> ::= {"while"}
+<t_for> ::= {"for"}
+<t_logicC> ::= {"!", variavel, "true", "false", num, "$"}
+<t_logicCPlus> ::= {"&&", "||"}
+<t_relationalC> ::= {"$"}
+<t_relational> ::= {">", "<", ">=", "<=", "==", "!="}
+<t_id> ::= {variavel}
+<t_num> ::= {num}
+<t_bool> ::= {"true", "false"}
+<t_char> ::= {"'"}
+<t_str> ::= {"\""}
+<t_dig> ::= {num}
+<t_character> ::= {variavel}
 
 /***********    FOLLOW    ***********/
-<Main> ::= {"$"}
-<Var> ::= {letra, "if", "while", "for"}
-<Declaration> ::= {"]"}
-<Type> ::= {letra}
-<End Command> ::= {"int", "double", "char", "string", "bool", "while", "for", letra}
-<Command> ::= {"}", letra, "if", "while", "for"}
-<Atributtion> ::= {";", ")", letra, "if", "while", "for"}
-<Operation> ::= {";"}
-<Arithmetic Operator> ::= {letra, num}
-<Decision> ::= {"}", letra, "if", "while", "for"}
-<Repetition> ::= {"}", letra, "if", "while", "for"}
-<If Statement> ::= {"}", letra, "if", "while", "for"}
-<Condition> ::= {")", ";"}
-<While Statement> ::= {"}", letra, "if", "while", "for"}
-<For Statement> ::= {"}", letra, "if", "while", "for"}
-<Logic Condition> ::= {")", ";"}
-<Logic Condition Plus> ::= {")", ";", "&&", "||"}
-<Relational Condition> ::= {")", ";", "&&", "||"}
-<Relational Operator> ::= {num, letra}
-<Variable> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
-<Numeric Value> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}
-<Boolean Value> ::= {";", ")", "&&", "||"}
-<Char Value> ::= {";"}
-<String Value> ::= {";"}
-<Digit> ::= {"'"}
-<Charactere> ::= "/"" 
+<t_main> ::= {"$"}
+<t_var> ::= {variavel, "if", "while", "for"}
+<t_declaration> ::= {"]"}
+<t_type> ::= {variavel}
+<t_end> ::= {"int", "double", "char", "string", "bool", "while", "for", variavel}
+<t_command> ::= {"}", variavel, "if", "while", "for"}
+<t_att> ::= {";", variavel, "if", "while", "for"}
+<t_operation> ::= {";"}
+<t_op> ::= {variavel, num}
+<t_decision> ::= {"}", variavel, "if", "while", "for"}
+<t_repetition> ::= {"}", variavel, "if", "while", "for"}
+<t_if> ::= {"}", variavel, "if", "while", "for"}
+<t_else> ::= {"}", variavel, "if", "while", "for"}
+<t_condition> ::= {")", ";"}
+<t_while> ::= {"}", variavel, "if", "while", "for"}
+<t_for> ::= {"}", variavel, "if", "while", "for"}
+<t_logicC> ::= {")", ";"}
+<t_logicCPlus> ::= {")", ";", "&&", "||"}
+<t_relationalC> ::= {")", ";", "&&", "||"}
+<t_relational> ::= {num, variavel}
+<t_id> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
+<t_num> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}
+<t_bool> ::= {";", ")", "&&", "||"}
+<t_char> ::= {";"}
+<t_str> ::= {";"}
+<t_dig> ::= {"'"}
+<t_character> ::= "/"" 

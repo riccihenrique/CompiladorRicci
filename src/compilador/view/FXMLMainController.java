@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import compilador.compiler.Compiler;
 import compilador.compiler.Error;
+import compilador.compiler.Token;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
@@ -50,6 +51,8 @@ private TabPane tbpFiles;
     
     
     private boolean flag = false;
+    @FXML
+    private JFXTextArea taTabela;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tbpFiles.getStyleClass().add("floating");
@@ -148,9 +151,7 @@ private TabPane tbpFiles;
             try {
                 FileReader arq = new FileReader(file);
                 BufferedReader reader = new BufferedReader(arq);
-                path = file.getAbsolutePath();
-                /*for(Tab t : tbpFiles.getTabs())
-                    if(t.getText().equals(file.getName()))    */                    
+                path = file.getAbsolutePath();                
                 
                 createTab(file.getName(), false);
                 tbpFiles.getSelectionModel().select(tbpFiles.getTabs().size() - 1);
@@ -166,7 +167,6 @@ private TabPane tbpFiles;
                                 line = reader.readLine();
                             }
                             caAux.replaceText(text);
-                            //caAux.appendText(text);
                             break;
                         }
                     }                    
@@ -216,7 +216,16 @@ private TabPane tbpFiles;
         
         String msg = "";
         List<Error> err = compiler.getErrors();
-        if(/*compiler.finished() && */err.isEmpty())
+        List<Token> tk = compiler.getTableTokens();
+        
+        for(Token t : tk)
+            msg += t + "\n";
+        
+        taTabela.clear();
+        taTabela.setText(msg);
+        
+        msg = "";
+        if(compiler.finished() && err.isEmpty())
             msg = "Ahhhh, compilou meu irmão!!!!!!";
         else
             for(Error e : err)

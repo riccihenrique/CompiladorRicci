@@ -7,39 +7,36 @@ public class SyntaticAnalysis {
     
     private final String code;
     private Token nextToken;
-    private final List<Error> errors = new ArrayList<>();
+    private final List<Error> errors;
     private LexicalAnalysis la;
     private final First first;
     private final Follow follow;
-    private boolean ignoreAll = false;
     
     public SyntaticAnalysis(String code) {
         this.code = code;
         this.first = new First();
         this.follow = new Follow();
+        this.errors = new ArrayList<>();
     }
     
-    private void var() {
+    private void t_var() {
         if(nextToken.getToken().equals("t_var")) {
             nextToken();
             if(nextToken.getToken().equals("t_[")) {
                 nextToken();
-                declaration();
+                t_declaration();
                 
-                if(!nextToken.getToken().equals("t_]"))                    
-                    addError("Hm... falta um ]");
-                else
+                if(nextToken != null && nextToken.getToken().equals("t_]")) 
                     nextToken();
+                else
+                    addError("Esta faltando um ]");
             }
-            else {
+            else
                 addError("É necessário um [ depois do var");
-                ignoreAll = true;
-            }
         }
     }
     
-    private void declaration() {        
-        boolean flag = false;  
+    private void t_declaration() {
         if(nextToken.getToken().equals("t_type")) {
             nextToken();
             if(nextToken.getToken().equals("t_id")){
@@ -47,51 +44,45 @@ public class SyntaticAnalysis {
                 if(nextToken.getToken().equals("t_end")) {
                     nextToken();
                     // TODO
-                    flag = true;
                 }
                 else 
-                    addError("Eae irmão, eu esperava um ; aqui");
+                    addError("Esta faltando um ;");
             }
             else
                 addError("Eu tava esperando uma variável aqui :/");
         }
         else
-            addError("Que tipo de dado é esse rapaz?");
+            addError("Tipo de dado nao conhecido");
         
-        if(!flag)    
-            while(!first.getFirst_declaration().contains(nextToken.getToken()) && !follow.getFollow_declaration().contains(nextToken.getToken()))
-                nextToken();
-        
-        if(!follow.getFollow_declaration().contains(nextToken.getToken()))
-            if(first.getFirst_declaration().contains(nextToken.getToken()))
-                declaration();
-            else
-                addError("Simbolo nao esperado aqui");
-    }
-    
-    private void command() {
-        if(first.getFirst_atribution().contains(nextToken.getToken()))
-            atributtion();
-        else if(first.getFirst_decision().contains(nextToken.getToken()))
-            decision();
-        else if(first.getFirst_repetition().contains(nextToken.getToken()))
-            repetition();
-        else
-            addError("Cade o comando que deveria estar aqui?");
-         
-        while(!first.getFirst_command().contains(nextToken.getToken()) && !follow.getFollow_command().contains(nextToken.getToken()))
+ 
+        while(nextToken != null && !first.getT_declaration().contains(nextToken.getToken()) && !follow.getT_declaration().contains(nextToken.getToken()) && 
+                    !first.getT_command().contains(nextToken.getToken()) && !follow.getT_command().contains(nextToken.getToken()))
             nextToken();
         
-        if(first.getFirst_command().contains(nextToken.getToken()))
-            if(!nextToken.getToken().equals("t_}")) 
-                command();
-        
-        //if(!follow.getFollow_command().contains(nextToken.getToken()))
-            //addError("Trecho não esperado aqui");
+        if(nextToken != null && !follow.getT_declaration().contains(nextToken.getToken()) && first.getT_declaration().contains(nextToken.getToken()))
+            t_declaration();
     }
     
-    private void atributtion() {
-        boolean flag = false;
+    private void t_command() {
+        if(nextToken != null) {
+            if(first.getT_attribution().contains(nextToken.getToken()))
+                t_att();
+            else if(first.getT_decision().contains(nextToken.getToken()))
+                t_decision();
+            else if(first.getT_repetition().contains(nextToken.getToken()))
+                t_repetition();
+            else
+                addError("Onde esta o comando daqui?");
+
+            while(nextToken != null && !first.getT_command().contains(nextToken.getToken()) && !follow.getT_command().contains(nextToken.getToken()))
+                nextToken();
+  
+            if(nextToken != null && first.getT_command().contains(nextToken.getToken()))
+                t_command();
+        }
+    }
+    
+    private void t_att() {
         if(nextToken.getToken().equals("t_id")) {
             nextToken();
             if(nextToken.getToken().equals("t_att")) {
@@ -100,18 +91,16 @@ public class SyntaticAnalysis {
 
                     if(nextToken.getToken().equals("t_id") || nextToken.getToken().equals("t_num") || nextToken.getToken().equals("t_char") || 
                             nextToken.getToken().equals("t_bool") || nextToken.getToken().equals("t_str")) {
-                         nextToken();
+                        nextToken();
                         if(nextToken.getToken().equals("t_end")) {
                             nextToken();
                             //TODO
-
-                            flag = true;
                         }
                         else if(nextToken.getToken().equals("t_op")) {
-                            operation();
+                            t_operation();
                         }
                         else
-                            addError("Ta faltando o ;");                            
+                            addError("Esta faltando um  ;");                            
                     }
                     else
                         addError("Tu não pode receber isso ai não");
@@ -119,28 +108,18 @@ public class SyntaticAnalysis {
                 }
                 else if(nextToken.getLexema().equals("++") || nextToken.getLexema().equals("--")) {
                     nextToken();
-                    if(!nextToken.getToken().equals("t_end") && !nextToken.getToken().equals("t_)")) 
-                        addError("Ta faltando o ;");                    
+                    if(!follow.getT_attribution().contains(nextToken.getToken())) 
+                        addError("Esta faltando um  ;");
+                    else
+                        nextToken();
                 }
-                else 
-                    addError("Aqui eu nem sei o que falar, mas ta errado");
             }
             else
-                addError("Cade a atribuição?");
-             
-        if(!flag)    
-            while(!first.getFirst_atribution().contains(nextToken.getToken()) && !follow.getFollow_atribution().contains(nextToken.getToken()))
-                nextToken();
-        
-        if(!follow.getFollow_atribution().contains(nextToken.getToken()))
-            if(first.getFirst_atribution().contains(nextToken.getToken()))
-                command();
-            else
-                addError("Simbolo nao esperado aqui");
+                addError("Onde esta a atribuiçao?");
         }
     }
     
-    private void operation() {
+    private void t_operation() {
         if(nextToken.getToken().equals("t_op")) {
             nextToken();
             if(nextToken.getToken().equals("t_num") || nextToken.getToken().equals("t_id")) {
@@ -149,7 +128,7 @@ public class SyntaticAnalysis {
                 if(nextToken.getToken().equals("t_end")) ;
                     //nextToken();
                 else
-                    addError("Falta um ;");
+                    addError("Esta faltando um  ;");
             }                
             else
                 addError("algo nessa operaçao");
@@ -157,43 +136,34 @@ public class SyntaticAnalysis {
         else
             addError("Isso nao e um operador");
         
-        while(!follow.getFollow_operation().contains(nextToken.getToken()))
+        while(!follow.getT_operation().contains(nextToken.getToken()))
             nextToken();
     }
     
-    private void decision() {
-        if_statement();
-        
-        /*while(!first.getFirst_decision().contains(nextToken.getToken()) && !follow.getFollow_decision().contains(nextToken.getToken()))
-            nextToken();
-        
-        if(!follow.getFollow_decision().contains(nextToken.getToken()))
-            if(first.getFirst_decision().contains(nextToken.getToken()))
-                command();
-            else
-                addError("Simbolo nao esperado aqui");*/
+    private void t_decision() {
+        t_if();
     }
     
-    private void logic() {
+    private void t_logicC() {
         if(nextToken.getLexema().equals("!"))  // !
             nextToken();
         
         if(nextToken.getToken().equals("t_id") || nextToken.getToken().equals("t_bool"))
             nextToken();
         else if(nextToken.getToken().equals("t_$"))
-            relational();
+            t_relationalC();
         else {
-            addError("Tipo de dado nao suportado aqui em comparaçoes logicas");
+            addError("Tipo de dado nao suportado em comparaçoes logicas");
             nextToken();
         }
         
-        if(first.getFirst_logicPlus().contains(nextToken.getToken()))
-            logicPlus();
-        else if(!follow.getFollow_logicCondition().contains(nextToken.getToken()))
+        if(first.getT_logicCPlus().contains(nextToken.getToken()))
+            t_logicCPlus();
+        else if(!follow.getT_logicC().contains(nextToken.getToken()))
             addError("Este comando nao esta no formato correto");
     }
 
-    private void logicPlus() {        
+    private void t_logicCPlus() {        
         if(nextToken.getLexema().equals("&&") || nextToken.getLexema().equals("||")) {
             nextToken();
             if(nextToken.getToken().equals("t_logic")) { // !
@@ -205,31 +175,32 @@ public class SyntaticAnalysis {
                 nextToken();
             }
             else if(nextToken.getToken().equals("t_$"))
-                relational();
+                t_relationalC();
             else {
                 addError("Isso nao parece fazer parte da condiçao"); // ARRUMAR AQUI
                 
-                while(!follow.getFollow_logicPlus().contains(nextToken.getToken()) /*|| !nextToken.getLexema().equals("!")*/)
+                while(!follow.getT_logicCPlus().contains(nextToken.getToken()) /*|| !nextToken.getLexema().equals("!")*/)
                     nextToken();
                 if(nextToken.getLexema().equals("!")) {
                     nextToken();
-                    while(!follow.getFollow_logicPlus().contains(nextToken.getToken()) /*|| !nextToken.getLexema().equals("!")*/)
+                    while(!follow.getT_logicCPlus().contains(nextToken.getToken()) /*|| !nextToken.getLexema().equals("!")*/)
                         nextToken();
-                }
-                    
+                } 
             }
         }
         
-        if(first.getFirst_logicPlus().contains(nextToken.getToken()) && !nextToken.getLexema().equals("!")) //Eveita que ! entre tambem
-            logicPlus();
-        else if(!follow.getFollow_logicPlus().contains(nextToken.getToken())) {
-            addError("Revise esse trecho do codigo");            
-            while(!follow.getFollow_logicPlus().contains(nextToken.getToken()) && new Symbol().isReserved(nextToken.getLexema()) == null)
+        if(first.getT_logicCPlus().contains(nextToken.getToken()) && !nextToken.getLexema().equals("!")) //Eveita que ! entre tambem
+            t_logicCPlus();
+        else 
+            
+            if(!follow.getT_logicCPlus().contains(nextToken.getToken())) {
+                addError("Revise esse trecho do codigo");            
+                while(!follow.getT_logicCPlus().contains(nextToken.getToken()) && new Symbol().isReserved(nextToken.getLexema()) == null)
                     nextToken();
-        }
+            }
     }
 
-    private void relational() {
+    private void t_relationalC() {
         if(nextToken.getToken().equals("t_$")) {
             nextToken();
             
@@ -245,184 +216,206 @@ public class SyntaticAnalysis {
                         if(nextToken.getToken().equals("t_$"))
                             nextToken();
                         else
-                            addError("Amigao, ta faltando o $");
+                            addError("Esta faltando um $");
                     }   
                     else
-                        addError("Não há parametros para comparação");
+                        addError("Nao encontrei algo para relacionar");
                 }
                 else
-                    addError("Não é um operador relacional");
+                    addError("Esta faltando um operador relacional");
             }
+            else
+                addError("Nao encontrei algo para relacionar");
         }
         
-        while(!follow.getFollow_relationalCondition().contains(nextToken.getToken()))
-            nextToken();
-        
-        if(first.getFirst_logicPlus().contains(nextToken.getToken()))
-            logicPlus();
+        if(first.getT_logicCPlus().contains(nextToken.getToken()))
+            t_logicCPlus();
     }
     
-    private void condition() {
-        if(first.getFirst_relationalCondition().contains(nextToken.getToken()))
-            relational();
-        else if(first.getFirst_logicCondition().contains(nextToken.getToken()))
-            logic();       
-        else {
+    private void t_condition() {
+        if(first.getT_relationalC().contains(nextToken.getToken()))
+            t_relationalC();
+        else if(first.getT_logicC().contains(nextToken.getToken()))
+            t_logicC();       
+        else 
             addError("Isso não parece ser uma condição...");
-            //while(!follow.getFollow_condition().contains(nextToken.getToken()))
-             //   nextToken();
-        }
     }
 
-    private void if_statement() {
+    private void t_if() {
         boolean flag = false;
         if(nextToken.getToken().equals("t_if")) {
             nextToken();
             if(nextToken.getToken().equals("t_(")) {
                 nextToken();
-                condition();
+                t_condition();
                 if(nextToken.getToken().equals("t_)")) {
                     nextToken();
                     if(nextToken.getToken().equals("t_{")) {
                         nextToken();
-                        command();
+                        t_command();
                         
                         if(!nextToken.getToken().equals("t_}")) {
-                            addError("Ta faltando o }");
+                            addError("Esta faltando um  }");
                         }
                         
                         nextToken();
-                        if(nextToken.getToken().equals("t_else")) {
-                            nextToken();
-                            
-                            if(nextToken.getToken().equals("t_{")) {
-                                nextToken();
-                                command();
-                        
-                                if(!nextToken.getToken().equals("t_}")) {
-                                    addError("Ta faltando o }");
-                                }
-                            }
-                            else
-                                addError("Ta faltando um { ");
-                        }
+                        t_else();
                     }
                     else
-                        addError("Ta faltando um { ");
+                        addError("Esta faltando um { ");
                 }
                 else
-                    addError("Ta faltando o )");
+                    addError("Esta faltando um )");
             }
             else
-                addError("Amigão, ou tu digitou errado, ou ta faltando (");            
+                addError("Esta faltando um (");            
         }
     }
     
-    private void repetition() {
-        forS();
-        whileS();
-        
-        /*while(!first.getFirst_repetition().contains(nextToken.getToken()) && !follow.getFollow_repetition().contains(nextToken.getToken()))
+    private void t_else() {
+        if(nextToken.getToken().equals("t_else")) {
             nextToken();
-        
-        if(!follow.getFollow_repetition().contains(nextToken.getToken()))
-            if(first.getFirst_repetition().contains(nextToken.getToken()))
-                command();
+
+            if(nextToken.getToken().equals("t_{")) {
+                nextToken();
+                t_command();
+
+                if(!nextToken.getToken().equals("t_}"))
+                    addError("Esta faltando um  }");
+                else
+                    nextToken();
+            }
             else
-                addError("Simbolo nao esperado aqui");*/
+                addError("Esta faltando um { ");
+        }
     }
     
-    private void forS() {
+    private void t_repetition() {
+        t_for();
+        t_while();
+    }
+    
+    private void gambi() {
+        while(nextToken != null && !nextToken.getLexema().equals(")") && !nextToken.getLexema().equals("{"))
+            nextToken();
+        
+        if(nextToken.getLexema().equals(")")) 
+            nextToken();
+        else
+            addError("Falta um )");
+            
+        if(nextToken.getToken().equals("t_{"))
+            nextToken();
+        else
+            addError("Falta um {");
+        
+        t_command();
+        if(nextToken.getToken().equals("t_}"))
+             nextToken();
+        else
+            addError("Falta um }");
+    }
+    
+    private void t_for() {
         if(nextToken.getToken().equals("t_for")) {
             nextToken();
             if(nextToken.getToken().equals("t_(")) {
                 nextToken();
-                atributtion();
-                if(nextToken.getToken().equals("t_end")) // Adaptaçao tecnca
-                    nextToken();
+                t_att();                
                 
-                condition();
-                if(nextToken.getToken().equals("t_end")) 
-                    nextToken();
-                else
-                    addError("CADE O ;?");
-                if(first.getFirst_atribution().contains(nextToken.getToken()))
-                    atributtion();
-                else
-                    addError("Isso nao se parece com uma atribuiçao");
-                
-                /*while(!nextToken.getToken().equals("t_)")) // Adaptaçao tecnca
-                    nextToken();*/
-                
-                if(nextToken.getToken().equals("t_)")) {
-                    nextToken();
-                    
-                    if(nextToken.getToken().equals("t_{")) {
+                if(first.getT_condition().contains(nextToken.getToken())) {
+                    t_condition();
+                    if(nextToken.getToken().equals("t_end")) {
                         nextToken();
-                        command();
                         
-                        if(nextToken.getToken().equals("t_}"))
-                            nextToken();
-                        else
-                            addError("Ta faltando o }");
+                        if(first.getT_attribution().contains(nextToken.getToken())) {   
+                            t_att();
+                            if(nextToken.getToken().equals("t_)")) {
+                                nextToken();
+
+                                if(nextToken.getToken().equals("t_{")) {
+                                    nextToken();
+                                    t_command();
+
+                                    if(nextToken.getToken().equals("t_}"))
+                                        nextToken();
+                                    else
+                                        addError("Esta faltando um  }");
+                                }
+                                else
+                                    addError("Esta faltando um  {");
+                            }
+                            else {
+                                gambi();
+                                addError("Esta faltando um  )");
+                            }
+                        }
+                        else {
+                            gambi();
+                            addError("Ou falta um ; ou a atribuiiçao esta incorreta");
+                        }
                     }
-                    else
-                        addError("Ta faltando o {");
+                    else {
+                        gambi();
+                        addError("Esta faltando um  ;");
+                    }
                 }
-                else
-                    addError("Ta faltando o )");
+                else {
+                    gambi();
+                    addError("Erro na 1ª atribuiçao");
+                }                
             }
-            else
-                addError("Ta faltando o (");
+            else {
+                gambi();
+                addError("Esta faltando um  (");
+            }
         }
     }
     
-    private void whileS() {
+    private void t_while() {
         if(nextToken.getToken().equals("t_while")) {
             nextToken();
             if(nextToken.getToken().equals("t_(")) {
                 nextToken();
-                condition();
+                t_condition();
                 
                 if(nextToken.getToken().equals("t_)")) {
                     nextToken();
                     
                     if(nextToken.getToken().equals("t_{")) {
                         nextToken();
-                        command();
+                        t_command();
                         
-                        if(nextToken.getToken().equals("t_}")) {
-                            nextToken();
-                        }
+                        if(nextToken.getToken().equals("t_}"))
+                            nextToken();                        
                         else
-                           addError("Ta faltando o {");
+                           addError("Esta faltando um  {");
                     }
                     else
-                        addError("Ta faltando o {");
+                        addError("Esta faltando um  {");
                 }
                 else
-                    addError("Ta faltando o )");
-                
+                    addError("Esta faltando um  )");                
             }
             else
-                addError("Ta faltando o (");
+                addError("Esta faltando um  (");
         }
     }
     
-    private void main() {
+    private void t_main() {
         if(nextToken.getToken().equals("t_main")) {
             nextToken();        
             if(nextToken.getToken().equals("t_{")) {
                 nextToken();
-                var();
-                command();
-                if(nextToken.getToken().equals("t_}"))
+                t_var();
+                t_command();
+                if(nextToken != null && nextToken.getToken().equals("t_}"))
                     return;
                 else
-                    addError("Hm...falta um }");
+                    addError("Esta faltando um }");
             }
             else
-                addError("Hm... Precisa de um { depois do Ricci");
+                addError("Esta faltando um { depois do Ricci");
         }
         else
             addError("Palavra ricci não encontrada no início");
@@ -432,32 +425,34 @@ public class SyntaticAnalysis {
         la = new LexicalAnalysis(code.toLowerCase());        
         nextToken();      
         try {
-            main();
+            t_main();
         }
        catch(Exception e) {System.out.println(e.getMessage());}
-        
-        la.showTokens();
+        if(nextToken == null)
+            addError("Fim de arquivo inesperado");
+        else
+            nextToken(); // Ver se nao tem mais nada a ser lido
     }
     
     public List<Error> getErrors() {
-        if(!ignoreAll)
-            errors.addAll(la.getErrors());
+        errors.addAll(la.getErrors());
         return errors;
     }
     
     private void addError(String error) {
-        if(!ignoreAll) {
-            int[] lineInformation = la.getLineInformation();
-            errors.add(new Error(error, lineInformation[0], lineInformation[1]));
-        }
+        int[] lineInformation = la.getLineInformation();
+        errors.add(new Error(error, lineInformation[0], lineInformation[1]));
     }
     
     private void nextToken() {
-        if(!finished())
-            nextToken = la.nextToken();
+        nextToken = la.nextToken();
     }
     
     public boolean finished() {
         return la.finished();
+    }
+
+    List<Token> getTable() {
+        return la.getTokens();
     }
 }

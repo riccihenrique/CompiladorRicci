@@ -4,128 +4,128 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class First {
-    private final List<String> first_main;
-    private List<String> first_declaration;
-    private List<String> first_command;
-    private List<String> first_atribution;
-    private List<String> first_operation;
-    private List<String> first_decision;
-    private List<String> first_repetition;
-    private List<String> first_if;
-    private List<String> first_condition;
-    private List<String> first_while;
-    private List<String> first_for;
-    private List<String> first_logicCondition;   
+    private final List<String> t_main;
+    private List<String> t_declaration;
+    private List<String> t_command;
+    private List<String> t_attribution;
+    private List<String> t_operation;
+    private List<String> t_decision;
+    private List<String> t_repetition;
+    private List<String> t_if;
+    private List<String> t_condition;
+    private List<String> t_while;
+    private List<String> t_for;
+    private List<String> t_logicC;   
   
-    private List<String> first_logicPlus;
-    private List<String> first_relationalCondition;
+    private List<String> t_logicCPlus;
+    private List<String> t_relationalC;
     
     
     public First() {
-        first_main = new ArrayList<>();
-        first_declaration = new ArrayList<>();
-        first_command = new ArrayList<>();
-        first_decision = new ArrayList<>();
-        first_repetition = new ArrayList<>();
-        first_if = new ArrayList<>();
-        first_condition = new ArrayList<>();
-        first_while = new ArrayList<>();
-        first_for = new ArrayList<>();
-        first_logicCondition = new ArrayList<>();
-        first_relationalCondition = new ArrayList<>();
-        first_atribution = new ArrayList<>();
-        first_logicPlus = new ArrayList<>();
-        first_operation = new ArrayList<>();
+        t_main = new ArrayList<>();
+        t_declaration = new ArrayList<>();
+        t_command = new ArrayList<>();
+        t_decision = new ArrayList<>();
+        t_repetition = new ArrayList<>();
+        t_if = new ArrayList<>();
+        t_condition = new ArrayList<>();
+        t_while = new ArrayList<>();
+        t_for = new ArrayList<>();
+        t_logicC = new ArrayList<>();
+        t_relationalC = new ArrayList<>();
+        t_attribution = new ArrayList<>();
+        t_logicCPlus = new ArrayList<>();
+        t_operation = new ArrayList<>();
         
-        first_main.add("t_main");
+        t_main.add("t_main");
         
-        first_declaration.add("t_type");
+        t_declaration.add("t_type");
         
-        first_if.add("t_if");
-        first_for.add("t_for");
-        first_while.add("t_while");
+        t_if.add("t_if");
+        t_for.add("t_for");
+        t_while.add("t_while");
         
-        first_command.add("t_id");
-        first_command.addAll(first_if);
-        first_command.addAll(first_while);
-        first_command.addAll(first_for);
+        t_command.add("t_id");
+        t_command.addAll(t_if);
+        t_command.addAll(t_while);
+        t_command.addAll(t_for);
         
-        first_decision.addAll(first_if);
+        t_decision.addAll(t_if);
         
-        first_repetition.addAll(first_for);
-        first_repetition.addAll(first_while);
+        t_repetition.addAll(t_for);
+        t_repetition.addAll(t_while);
         
-        first_relationalCondition.add("t_$");        
+        t_relationalC.add("t_$");        
         
-        first_logicCondition.add("t_bool");
-        first_logicCondition.add("t_id");
-        first_logicCondition.add("t_logic");
-        first_logicCondition.addAll(first_relationalCondition);
+        t_logicC.add("t_bool");
+        t_logicC.add("t_id");
+        t_logicC.add("t_logic");
+        t_logicC.addAll(t_relationalC);
         
         
-        first_condition.addAll(first_logicCondition);
+        t_condition.addAll(t_logicC);
         
-        first_atribution.add("t_id");
+        t_attribution.add("t_id");
         
-        first_logicPlus.add("t_logic");
+        t_logicCPlus.add("t_logic");
         
-        first_operation.add("t_id");
-        first_operation.add("t_num");
+        t_operation.add("t_id");
+        t_operation.add("t_num");
     }
 
-    public List<String> getFirst_main() {
-        return first_main;
+    public List<String> getT_main() {
+        return t_main;
     }
 
-    public List<String> getFirst_declaration() {
-        return first_declaration;
+    public List<String> getT_declaration() {
+        return t_declaration;
     }
 
-    public List<String> getFirst_command() {
-        return first_command;
+    public List<String> getT_command() {
+        return t_command;
     }
 
-    public List<String> getFirst_decision() {
-        return first_decision;
+    public List<String> getT_attribution() {
+        return t_attribution;
     }
 
-    public List<String> getFirst_repetition() {
-        return first_repetition;
+    public List<String> getT_operation() {
+        return t_operation;
     }
 
-    public List<String> getFirst_if() {
-        return first_if;
+    public List<String> getT_decision() {
+        return t_decision;
     }
 
-    public List<String> getFirst_condition() {
-        return first_condition;
+    public List<String> getT_repetition() {
+        return t_repetition;
     }
 
-    public List<String> getFirst_while() {
-        return first_while;
+    public List<String> getT_if() {
+        return t_if;
     }
 
-    public List<String> getFirst_for() {
-        return first_for;
+    public List<String> getT_condition() {
+        return t_condition;
     }
 
-    public List<String> getFirst_logicCondition() {
-        return first_logicCondition;
+    public List<String> getT_while() {
+        return t_while;
     }
 
-    public List<String> getFirst_relationalCondition() {
-        return first_relationalCondition;
+    public List<String> getT_for() {
+        return t_for;
     }
 
-    public List<String> getFirst_atribution() {
-        return first_atribution;
+    public List<String> getT_logicC() {
+        return t_logicC;
     }
 
-    public List<String> getFirst_logicPlus() {
-        return first_logicPlus;
+    public List<String> getT_logicCPlus() {
+        return t_logicCPlus;
     }
 
-    public List<String> getFirst_operation() {
-        return first_operation;
+    public List<String> getT_relationalC() {
+        return t_relationalC;
     }
 }

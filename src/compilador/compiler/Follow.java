@@ -4,127 +4,123 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Follow {
-    private final List<String> follow_main;
-    private List<String> follow_declaration;
-    private List<String> follow_command;
-    private List<String> follow_atribution;
-    private List<String> follow_operation;
-    private List<String> follow_decision;
-    private List<String> follow_repetition;
-    private List<String> follow_if;
-    private List<String> follow_condition;
-    private List<String> follow_while;
-    private List<String> follow_for;
-    private List<String> follow_logicCondition;    
-    private List<String> follow_logicPlus;
-    private List<String> follow_relationalCondition;
+    private List<String> t_main;
+    private List<String> t_declaration;
+    private List<String> t_command;
+    private List<String> t_attribution;
+    private List<String> t_operation;
+    private List<String> t_decision;
+    private List<String> t_repetition;
+    private List<String> t_if;
+    private List<String> t_condition;
+    private List<String> t_while;
+    private List<String> t_for;
+    private List<String> t_logicC;    
+    private List<String> t_logicCPlus;
+    private List<String> t_relationalC;
     
     public Follow() {
-        follow_main = new ArrayList<>();
-        follow_declaration = new ArrayList<>();
-        follow_command = new ArrayList<>();
-        follow_decision = new ArrayList<>();
-        follow_repetition = new ArrayList<>();
-        follow_if = new ArrayList<>();
-        follow_condition = new ArrayList<>();
-        follow_while = new ArrayList<>();
-        follow_for = new ArrayList<>();
-        follow_logicCondition = new ArrayList<>();
-        follow_relationalCondition = new ArrayList<>();
-        follow_atribution = new ArrayList<>();
-        follow_logicPlus = new ArrayList<>();
-        follow_operation = new ArrayList<>();
+        t_main = new ArrayList<>();
+        t_declaration = new ArrayList<>();
+        t_command = new ArrayList<>();
+        t_decision = new ArrayList<>();
+        t_repetition = new ArrayList<>();
+        t_if = new ArrayList<>();
+        t_condition = new ArrayList<>();
+        t_while = new ArrayList<>();
+        t_for = new ArrayList<>();
+        t_logicC = new ArrayList<>();
+        t_relationalC = new ArrayList<>();
+        t_attribution = new ArrayList<>();
+        t_logicCPlus = new ArrayList<>();
+        t_operation = new ArrayList<>();
         
-        follow_declaration.add("t_]");
+        t_declaration.add("t_]");
         
-        follow_command.add("t_}");
-        follow_command.add("t_id");
-        follow_command.add("t_if");
-        follow_command.add("t_while");
-        follow_command.add("t_for");
+        t_command.add("t_}");
         
-        follow_atribution.add("t_end");
-        follow_atribution.add("t_)");
+        t_attribution.add("t_end");
         
+        t_operation.add("t_end");
         
-        follow_operation.add("t_)");
-        follow_operation.add("t_end");
+        t_decision.addAll(t_command);
+        t_decision.add("t_id");
+        t_decision.add("t_if");
+        t_decision.add("t_while");
+        t_decision.add("t_for");
         
-        follow_decision.addAll(follow_command);
+        t_repetition.addAll(t_decision);
         
-        follow_repetition.addAll(follow_command);
+        t_if.addAll(t_decision);
         
-        follow_if.addAll(follow_command);
+        t_while.addAll(t_repetition);
         
-        follow_while.addAll(follow_command);
+        t_for.addAll(t_repetition);
         
-        follow_for.addAll(follow_command);
+        t_condition.add("t_)");
+        t_condition.add("t_end");
         
-        follow_condition.addAll(follow_atribution);
+        t_logicC.addAll(t_condition);
         
-        follow_logicCondition.addAll(follow_atribution);
+        t_logicCPlus.addAll(t_logicC);
         
-        follow_logicPlus.addAll(follow_logicCondition);
-        follow_logicPlus.add("t_logic");
-        
-        follow_relationalCondition.addAll(follow_logicPlus);
-        
-        follow_atribution.addAll(follow_command);
+        t_relationalC.addAll(t_logicCPlus);        
+        t_relationalC.add("t_logic");
     }
 
-    public List<String> getFollow_main() {
-        return follow_main;
+    public List<String> getT_main() {
+        return t_main;
     }
 
-    public List<String> getFollow_declaration() {
-        return follow_declaration;
+    public List<String> getT_declaration() {
+        return t_declaration;
     }
 
-    public List<String> getFollow_command() {
-        return follow_command;
+    public List<String> getT_command() {
+        return t_command;
     }
 
-    public List<String> getFollow_atribution() {
-        return follow_atribution;
+    public List<String> getT_attribution() {
+        return t_attribution;
     }
 
-    public List<String> getFollow_operation() {
-        return follow_operation;
+    public List<String> getT_operation() {
+        return t_operation;
     }
 
-    public List<String> getFollow_decision() {
-        return follow_decision;
+    public List<String> getT_decision() {
+        return t_decision;
     }
 
-    public List<String> getFollow_repetition() {
-        return follow_repetition;
+    public List<String> getT_repetition() {
+        return t_repetition;
     }
 
-    public List<String> getFollow_if() {
-        return follow_if;
+    public List<String> getT_if() {
+        return t_if;
     }
 
-    public List<String> getFollow_condition() {
-        return follow_condition;
+    public List<String> getT_condition() {
+        return t_condition;
     }
 
-    public List<String> getFollow_while() {
-        return follow_while;
+    public List<String> getT_while() {
+        return t_while;
     }
 
-    public List<String> getFollow_for() {
-        return follow_for;
+    public List<String> getT_for() {
+        return t_for;
     }
 
-    public List<String> getFollow_logicCondition() {
-        return follow_logicCondition;
+    public List<String> getT_logicC() {
+        return t_logicC;
     }
 
-    public List<String> getFollow_logicPlus() {
-        return follow_logicPlus;
+    public List<String> getT_logicCPlus() {
+        return t_logicCPlus;
     }
 
-    public List<String> getFollow_relationalCondition() {
-        return follow_relationalCondition;
+    public List<String> getT_relationalC() {
+        return t_relationalC;
     }
 }

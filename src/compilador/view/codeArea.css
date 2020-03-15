@@ -37,3 +37,7 @@
 .char {
     -fx-fill: #ffdb58;
 }
+
+.styled-text-area .caret {
+    -fx-stroke: white;
+}

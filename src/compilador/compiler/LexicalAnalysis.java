@@ -26,8 +26,8 @@ public class LexicalAnalysis {
         symbols = new Symbol();
         reservedWords = new ReservedWords();        
         
-        tokens.addAll(symbols.getSymbols());
-        tokens.addAll(reservedWords.getReservedWords());
+        //tokens.addAll(symbols.getSymbols());
+        //tokens.addAll(reservedWords.getReservedWords());
     }
     
     public Token nextToken() {
@@ -82,104 +82,127 @@ public class LexicalAnalysis {
                     }
                 
                     t = reservedWords.isReserved(tokenAux);           
-                    if(t != null)
+                    if(t != null) {
+                        tokens.add(t);
                         return t;
+                    }                        
                     else { //Variavel
                         Token variable = new Token("t_id", tokenAux);
                         tokens.add(variable);
                         return variable;
                     }
                 }            
-                else if(isNumber(c)) {
-                    while(!isReservatedSymbol(c) && c != ' ') {
-                        if(c == '.' && tokenAux.contains("."))
-                            errors.add(new Error("Ooo fião, não pode adicionar dois pontos pra um número", line, column));
+                else if(isNumber(c) || c == '-') {
+                    boolean flag = false;
+                    if(c == '-') {
+                        tokenAux += c;
+                        addCounters();                        
+                        c = code.charAt(countLetters);
+                        if(!isNumber(c)) {
+                            tokenAux = "";
+                            countLetters--;
+                            column--;
+                            c = code.charAt(countLetters);
+                        }
                         else
-                            tokenAux += c;
+                            flag = true;
+                    }
+                    else
+                        flag = true;
+                    
+                    if(flag) {
+                        while(!isReservatedSymbol(c) && c != ' ') {
+                            if(c == '.' && tokenAux.contains("."))
+                                errors.add(new Error("Ooo fião, não pode adicionar dois pontos pra um número", line, column));
+                            else
+                                tokenAux += c;
+                            addCounters();
+                            c = code.charAt(countLetters);
+                        }
+
+                        try {
+                            double number = Double.parseDouble(tokenAux);
+
+                            if(!Double.isNaN(number)) {
+                                t = new Token("t_num", number + "");
+                                tokens.add(t);
+                                return t;
+                            }   
+                        }
+                        catch(Exception e) {
+                            errors.add(new Error("Sintaxe incorreta. Voce quis escrever um número ou uma variável?", line, column));
+                            return new Token("t_id", tokenAux);
+                        }
+                    }
+                }
+                
+                if(c == '\'') { //Char
+                    tokenAux += c;
+                    addCounters();
+                    c = code.charAt(countLetters);
+                    while(c != '\'') {
+                        tokenAux += c;
                         addCounters();
                         c = code.charAt(countLetters);
                     }
-                    
-                    try {
-                        double number = Double.parseDouble(tokenAux);
+                    tokenAux += c;
 
-                        if(!Double.isNaN(number)) {
-                            t = new Token("t_num", number + "");
-                            tokens.add(t);
-                            return t;
-                        }   
+                    t = new Token("t_char", tokenAux);
+                    tokens.add(t);
+
+                    if(!(tokenAux.startsWith("'") && tokenAux.endsWith("'")))
+                        errors.add(new Error("Esse char está estranho", line, column));
+
+                    addCounters();
+                    return t; 
+                }
+                else if(c == '"') {
+                    tokenAux += c;
+                    addCounters();
+                    c = code.charAt(countLetters);
+                    while(c != '"') {
+                        tokenAux += c;
+                        addCounters();
+                        c = code.charAt(countLetters);
                     }
-                    catch(Exception e) {
-                        errors.add(new Error("Sintaxe incorreta. Voce quis escrever um número ou uma variável?", line, column));
-                        return new Token("t_id", tokenAux);
-                    }
+
+                    tokenAux += c;
+
+                    t = new Token("t_str", tokenAux);
+                    tokens.add(t);
+
+                    if(!(tokenAux.startsWith("\"") && tokenAux.endsWith("\"")))
+                        errors.add(new Error("Essa string está estranho", line, column));
+
+                    addCounters();
+                    return t; 
                 }
                 else {
-                    if(c == '\'') { //Char
+                    while(c != ' ' && c != '\n' && !isChar(c) && !isNumber(c) && symbols.isReserved(tokenAux) == null) {
                         tokenAux += c;
                         addCounters();
                         c = code.charAt(countLetters);
-                        while(c != '\'') {
-                            tokenAux += c;
-                            addCounters();
-                            c = code.charAt(countLetters);
-                        }
-                        tokenAux += c;
-
-                        t = new Token("t_char", tokenAux);
-                        tokens.add(t);
-
-                        if(!(tokenAux.startsWith("'") && tokenAux.endsWith("'")))
-                            errors.add(new Error("Esse char está estranho", line, column));
-
-                        addCounters();
-                        return t; 
                     }
-                    else if(c == '"') {
+
+                    if(symbols.isReserved(tokenAux + c) != null){
                         tokenAux += c;
                         addCounters();
-                        c = code.charAt(countLetters);
-                        while(c != '"') {
-                            tokenAux += c;
-                            addCounters();
-                            c = code.charAt(countLetters);
-                        }
+                    }
 
-                        tokenAux += c;
-
-                        t = new Token("t_str", tokenAux);
+                    t = symbols.isReserved(tokenAux);                        
+                    if(t != null) {
                         tokens.add(t);
-
-                        if(!(tokenAux.startsWith("\"") && tokenAux.endsWith("\"")))
-                            errors.add(new Error("Essa string está estranho", line, column));
-
-                        addCounters();
-                        return t; 
+                       return t;
                     }
                     else {
-                        while(c != ' ' && c != '\n' && !isChar(c) && !isNumber(c) && symbols.isReserved(tokenAux) == null) {
-                            tokenAux += c;
-                            addCounters();
-                            c = code.charAt(countLetters);
-                        }
-                        
-                        if(symbols.isReserved(tokenAux + c) != null){
-                            tokenAux += c;
-                            addCounters();
-                        }
-
-                        t = symbols.isReserved(tokenAux);                        
-                        if(t != null)
-                           return t;
-                        else {
-                            errors.add(new Error("Desconheço isso que voce escreveu: " + tokenAux, line, column));
-                            return new Token("t_.", ".");
-                        }
+                        errors.add(new Error("Desconheço isso que voce escreveu: " + tokenAux, line, column));
+                        return new Token("t_.", ".");
                     }
                 }
+                
             }
         }
-        return new Token("t_abort", "abortou");
+        return null;
     }
     
     private void addCounters() {
@@ -208,9 +231,8 @@ public class LexicalAnalysis {
         return vet;
     }
         
-    public void showTokens() {
-        for(Token t: tokens)
-            System.out.println(t);
+    public List<Token> getTokens() {
+        return tokens;
     }
     
     public boolean finished() {

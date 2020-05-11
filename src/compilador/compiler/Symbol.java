@@ -34,6 +34,7 @@ public class Symbol {
         symbols.add(new Token("t_\"", "\""));
         symbols.add(new Token("t_'", "'"));
         symbols.add(new Token("t_$", "$"));
+        symbols.add(new Token("t_,", ","));
     }      
     
     public List<Token> getSymbols() {

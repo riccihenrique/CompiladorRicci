@@ -2,8 +2,10 @@
 
 <t_var> ::= "var" "[" <t_declaration> "]"
 
-<t_declaration> ::= <t_type> <t_id> <t_end> | 
-                <t_type> <t_id> <t_end> <t_declaration>
+<t_declaration> ::= <t_type> <t_declaration_more> <t_end> | 
+                <t_type> <t_declaration_more> <t_end> <t_declaration>
+
+<t_declaration_more> ::= <t_id> | <t_id> "," <t_declaration_more>
 
 <t_type> ::= "int" | "double" | "char" | "string" | "bool"
 
@@ -31,12 +33,12 @@
 
 <t_while> ::= "while" "(" <t_condition> ")" "{" <t_command> "}"
 
-<t_for> ::= "for" "(" <t_att><t_end><t_condition><t_end><t_att><t_end>")" "{" <t_command> "}"
+<t_for> ::= "for" "(" <t_att><t_condition><t_end><t_att>")" "{" <t_command> "}"
 
 <t_logicC> ::= ["!"] (<t_id> | <t_bool> | <t_relationalC>) [<t_logicCPlus>]
 
 <t_logicCPlus> ::= ("&&" | "||" ) ["!"] (<t_relationalC> | <t_id> | <t_bool>) | 
-                    <t_logicCPlus>
+                   ("&&" | "||" ) ["!"] (<t_relationalC> | <t_id> | <t_bool>) <t_logicCPlus>
 
 <t_relationalC> ::= "$"(<t_num> | <t_id>) <t_relational> (<t_num> | <t_id>)"$"
 
@@ -50,7 +52,7 @@
 
 <t_char> "'" (<t_character> | <t_dig>) "'"
 
-<t_str> """ (a..z | _ | ! | @ | $ | % | & | * | ( | ) | = | + | - | _ | / | . | , | ; | : | ? | 0..9)* """
+<t_str> "\"" ... "\""
 
 <t_dig> ::= 0..9
 
@@ -61,8 +63,9 @@
 /************    FIRST    ************/
 
 <t_main> ::= {"ricci"}
-<t_id> ::= {"var"}
+<t_var> ::= {"var"}
 <t_declaration> ::= {"int", "double", "char", "string", "bool"}
+<t_declaration_more> ::= {variavel}
 <t_type> ::= {"int", "double", "char", "string", "bool"}
 <t_end> ::= {";"}
 <t_command> ::= {variavel, "if", "while", "for"}
@@ -73,10 +76,10 @@
 <t_repetition> ::= {"while", "for"}
 <t_if> ::= {"if"}
 <t_else> :: = {"else"}
-<t_condition> ::= {"!", variavel, "true", "false", num}
+<t_condition> ::= {"!", variavel, "true", "false", "$"}
 <t_while> ::= {"while"}
 <t_for> ::= {"for"}
-<t_logicC> ::= {"!", variavel, "true", "false", num, "$"}
+<t_logicC> ::= {"!", variavel, "true", "false", "$"}
 <t_logicCPlus> ::= {"&&", "||"}
 <t_relationalC> ::= {"$"}
 <t_relational> ::= {">", "<", ">=", "<=", "==", "!="}
@@ -92,10 +95,11 @@
 <t_main> ::= {"$"}
 <t_var> ::= {variavel, "if", "while", "for"}
 <t_declaration> ::= {"]"}
+<t_declaration_more> ::= {";"}
 <t_type> ::= {variavel}
-<t_end> ::= {"int", "double", "char", "string", "bool", "while", "for", variavel}
-<t_command> ::= {"}", variavel, "if", "while", "for"}
-<t_att> ::= {";", variavel, "if", "while", "for"}
+<t_end> ::= {variavel, "if", "while", "for", }...
+<t_command> ::= {"}"}
+<t_att> ::= {";", ")", "!", variavel, "true", "false", "$"}
 <t_operation> ::= {";"}
 <t_op> ::= {variavel, num}
 <t_decision> ::= {"}", variavel, "if", "while", "for"}
@@ -106,13 +110,13 @@
 <t_while> ::= {"}", variavel, "if", "while", "for"}
 <t_for> ::= {"}", variavel, "if", "while", "for"}
 <t_logicC> ::= {")", ";"}
-<t_logicCPlus> ::= {")", ";", "&&", "||"}
+<t_logicCPlus> ::= {")", ";"}
 <t_relationalC> ::= {")", ";", "&&", "||"}
 <t_relational> ::= {num, variavel}
-<t_id> ::= {";", "=", "++", "--", ")", "&&", "||", ">", "<", ">= ", "<=", "==", "!="}
-<t_num> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", ")"}
+<t_id> ::= {"=", "++", "--", "+", "-", "*", "/", "&&", "||", ")", ">", "<", ">=", "<=", "==", "!=", "$" 
+<t_num> ::= {";", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "$"}
 <t_bool> ::= {";", ")", "&&", "||"}
 <t_char> ::= {";"}
 <t_str> ::= {";"}
 <t_dig> ::= {"'"}
-<t_character> ::= "/"" 
+<t_character> ::= "'"

@@ -20,6 +20,8 @@ public class First {
     private List<String> t_logicCPlus;
     private List<String> t_relationalC;
     
+    private List<String> t_declaration_more;
+   
     
     public First() {
         t_main = new ArrayList<>();
@@ -36,6 +38,7 @@ public class First {
         t_attribution = new ArrayList<>();
         t_logicCPlus = new ArrayList<>();
         t_operation = new ArrayList<>();
+        t_declaration_more = new ArrayList<>();
         
         t_main.add("t_main");
         
@@ -71,6 +74,8 @@ public class First {
         
         t_operation.add("t_id");
         t_operation.add("t_num");
+        
+        t_declaration_more.add("t_id");
     }
 
     public List<String> getT_main() {
@@ -127,5 +132,9 @@ public class First {
 
     public List<String> getT_relationalC() {
         return t_relationalC;
+    }
+
+    public List<String> getT_declaration_more() {
+        return t_declaration_more;
     }
 }

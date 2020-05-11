@@ -1,12 +1,11 @@
-main {
-	var[
-	
-	]
+ricci {
+    var [
+        numeric n, n2;
+        char c, c2;
+        bool b, b2;
+        string s, s1;
+    ]
+    n2 = 1;
+    
+    n = (cast) "123";
 }
-
-
-
-
-
-
-

@@ -6,8 +6,7 @@ import java.util.List;
 public class LexicalAnalysis {    
     
     private final String code;    
-    private final List<Error> errors;       
-    private final List<Token> tokens;
+    private final List<Error> errors;
     
     private final Symbol symbols;
     private final ReservedWords reservedWords;
@@ -22,7 +21,6 @@ public class LexicalAnalysis {
         countLetters = column = 0;
         
         errors = new ArrayList<>();
-        tokens = new ArrayList<>();
         symbols = new Symbol();
         reservedWords = new ReservedWords();        
         
@@ -83,12 +81,10 @@ public class LexicalAnalysis {
                 
                     t = reservedWords.isReserved(tokenAux);           
                     if(t != null) {
-                        tokens.add(t);
                         return t;
                     }                        
                     else { //Variavel
                         Token variable = new Token("t_id", tokenAux);
-                        tokens.add(variable);
                         return variable;
                     }
                 }            
@@ -125,7 +121,8 @@ public class LexicalAnalysis {
 
                             if(!Double.isNaN(number)) {
                                 t = new Token("t_num", number + "");
-                                tokens.add(t);
+                                t.setType("numeric");
+                                t.setValue(number + "");
                                 return t;
                             }   
                         }
@@ -143,17 +140,21 @@ public class LexicalAnalysis {
                     while(c != '\'') {
                         tokenAux += c;
                         addCounters();
-                        c = code.charAt(countLetters);
+                        c = code.charAt(countLetters);if(countLetters == code.length() - 1) {
+                            errors.add(new Error("Fim de arquivo inesperado", line, column));
+                            throw new UnsupportedOperationException("Fim de arquivo inesperado");
+                        }
                     }
                     tokenAux += c;
 
                     t = new Token("t_char", tokenAux);
-                    tokens.add(t);
 
                     if(!(tokenAux.startsWith("'") && tokenAux.endsWith("'")))
                         errors.add(new Error("Esse char está estranho", line, column));
 
                     addCounters();
+                    t.setType("char");
+                    t.setValue(tokenAux);
                     return t; 
                 }
                 else if(c == '"') {
@@ -164,17 +165,22 @@ public class LexicalAnalysis {
                         tokenAux += c;
                         addCounters();
                         c = code.charAt(countLetters);
+                        if(countLetters == code.length() - 1) {
+                            errors.add(new Error("Fim de arquivo inesperado", line, column));
+                            throw new UnsupportedOperationException("Fim de arquivo inesperado");
+                        }
                     }
 
                     tokenAux += c;
 
                     t = new Token("t_str", tokenAux);
-                    tokens.add(t);
 
                     if(!(tokenAux.startsWith("\"") && tokenAux.endsWith("\"")))
                         errors.add(new Error("Essa string está estranho", line, column));
 
                     addCounters();
+                    t.setType("string");
+                    t.setValue(tokenAux);
                     return t; 
                 }
                 else {
@@ -191,7 +197,6 @@ public class LexicalAnalysis {
 
                     t = symbols.isReserved(tokenAux);                        
                     if(t != null) {
-                        tokens.add(t);
                        return t;
                     }
                     else {
@@ -199,7 +204,6 @@ public class LexicalAnalysis {
                         return new Token("t_.", ".");
                     }
                 }
-                
             }
         }
         return null;
@@ -229,10 +233,6 @@ public class LexicalAnalysis {
     public int[] getLineInformation() {
         int[] vet = {line, column};        
         return vet;
-    }
-        
-    public List<Token> getTokens() {
-        return tokens;
     }
     
     public boolean finished() {

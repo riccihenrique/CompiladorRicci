@@ -18,6 +18,7 @@ public class Follow {
     private List<String> t_logicC;    
     private List<String> t_logicCPlus;
     private List<String> t_relationalC;
+    private List<String> t_declaration_more;
     
     public Follow() {
         t_main = new ArrayList<>();
@@ -34,6 +35,7 @@ public class Follow {
         t_attribution = new ArrayList<>();
         t_logicCPlus = new ArrayList<>();
         t_operation = new ArrayList<>();
+        t_declaration_more = new ArrayList<>();
         
         t_declaration.add("t_]");
         
@@ -66,6 +68,8 @@ public class Follow {
         
         t_relationalC.addAll(t_logicCPlus);        
         t_relationalC.add("t_logic");
+    
+        t_declaration_more.add("t_end");
     }
 
     public List<String> getT_main() {
@@ -122,5 +126,9 @@ public class Follow {
 
     public List<String> getT_relationalC() {
         return t_relationalC;
+    }
+
+    public List<String> getT_declaration_more() {
+        return t_declaration_more;
     }
 }

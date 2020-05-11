@@ -82,7 +82,7 @@ public class FXMLContextTabController implements Initializable {
     }
 
     private static final String[] KEYWORDS = {"ricci", "var"},
-            KEYTYPES = {"int", "double", "bool", "char", "string", "true", "false"},
+            KEYTYPES = {"numeric", "bool", "char", "string", "true", "false"},
             KEYCOMMAND = {"if", "else", "while", "for"};
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";

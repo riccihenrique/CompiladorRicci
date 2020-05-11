@@ -9,9 +9,8 @@ public class ReservedWords {
     public ReservedWords() {
         reserved.add(new Token("t_main", "ricci"));
         reserved.add(new Token("t_var", "var"));
-        reserved.add(new Token("t_type", "int"));
+        reserved.add(new Token("t_type", "numeric"));
         reserved.add(new Token("t_type", "char"));
-        reserved.add(new Token("t_type", "double"));
         reserved.add(new Token("t_type", "string"));
         reserved.add(new Token("t_type", "bool"));
         reserved.add(new Token("t_if", "if"));
@@ -20,6 +19,7 @@ public class ReservedWords {
         reserved.add(new Token("t_while", "while"));
         reserved.add(new Token("t_bool", "true"));
         reserved.add(new Token("t_bool", "false"));
+        reserved.add(new Token("t_cast", "cast"));
     }
     
     public Token isReserved(String str) {

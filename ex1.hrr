@@ -5,7 +5,11 @@ ricci {
         bool b, b2;
         string s, s1;
     ]
-    n2 = 1;
     
     n = (cast) "123";
+    n2 = 1 + 5 + 8 + n;
+    
+    if($ n > n2 $) {
+        b = false;
+    }
 }

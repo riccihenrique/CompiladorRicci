@@ -70,7 +70,7 @@ public class SemanticAlalysis {
                     id.setValue(v  + "");
                     flag = true;
                 }
-                catch(Exception e) {
+                catch(NumberFormatException e) {
                     errors.add(new Error(value.getValue() + " não é o tipo numérico", line, 0));
                 }
             }
@@ -101,7 +101,7 @@ public class SemanticAlalysis {
             }
             else {
                 if(value.getToken().equals("t_bool")) {
-                    id.setValue(value.getLexema().equals("false") ? false : true);
+                    id.setValue(!value.getLexema().equals("false"));
                     flag = true;
                 }
                 else 

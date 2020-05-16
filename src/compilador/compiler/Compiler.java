@@ -12,6 +12,7 @@ public class Compiler {
     private String code = "";
     private List<Error> errors;
     private SyntaticAnalysis sa;
+    private CodeGenerator codeGenerator;
     
     public Compiler(String filePath) throws IOException {
         errors = new ArrayList<>();
@@ -27,17 +28,26 @@ public class Compiler {
                 code += aux + "\n";
                 aux = reader.readLine();
             }            
-        } catch (IOException ex) {System.out.println(ex.getMessage());}
+        } 
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     
     public void Compile() {
         sa = new SyntaticAnalysis(code);
         sa.Analyse();
        
-        errors.addAll(sa.getErrors());
+        errors.addAll(sa.getErrors());        
         
-        if(errors.isEmpty() && !sa.finished())
-            errors.add(new Error("O programa nao pode ser compilado", 1, 1));        
+        if(errors.isEmpty()) {
+            if(!sa.finished())
+                errors.add(new Error("O programa nao pode ser compilado", 1, 1));
+            else {
+                codeGenerator = new CodeGenerator(sa.getTable());
+                codeGenerator.Analyze();
+            }
+        }       
     }
     
     public List<Error> getErrors() {
@@ -49,6 +59,6 @@ public class Compiler {
     }
 
     public List<Token> getTableTokens() {
-        return sa.getTable();
+        return codeGenerator.getTokens();
     }
 }

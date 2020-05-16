@@ -118,7 +118,8 @@ public class SyntaticAnalysis {
             var = semantic.variableDeclared(tokens, nextToken, la.getLineInformation()[0]);
             if(var == null)
                 var = nextToken;
-            nextToken(false);
+            attToken(var);
+            nextToken(true);
             if(nextToken.getToken().equals("t_att")) {
                 if(nextToken.getLexema().equals("=")) {
                     nextToken(true);
@@ -156,13 +157,11 @@ public class SyntaticAnalysis {
                         
                         if(check) {
                             var = semantic.checkType(var, var2, cast, la.getLineInformation()[0]);
-                            if(var != null) {
-                                removeToken(var);                            
-                                tokens.add(var);
-                            }
+                            if(var != null)
+                                attToken(var);
                         }
-                        
                         nextToken(true);
+                        attToken(var2);
                         if(nextToken.getToken().equals("t_end"))
                             nextToken(true);
                         else if(nextToken.getToken().equals("t_op")) 
@@ -188,14 +187,26 @@ public class SyntaticAnalysis {
     }
     
     private void t_operation() {
+        Token var;
+        boolean check;
         if(nextToken.getToken().equals("t_op")) {
             nextToken(true);
-            if(nextToken.getToken().equals("t_num") || nextToken.getToken().equals("t_id")) {                
-                nextToken(true);
-                
-                if(nextToken.getToken().equals("t_end")) ;
-                    //nextToken(true);
+            if(nextToken.getToken().equals("t_num") || nextToken.getToken().equals("t_id")) {
+                if(nextToken.getToken().equals("t_id")) {
+                    var = semantic.variableDeclared(tokens, nextToken, la.getLineInformation()[0]);
+                    if(var == null )
+                        var = nextToken;
+                    semantic.checkInit(var, la.getLineInformation()[0]);
+                    
+                    nextToken(true);
+                    attToken(var);                           
+                }
                 else
+                    nextToken(true);                
+                
+                if(nextToken.getToken().equals("t_op"))
+                    t_operation();
+                else if(!nextToken.getToken().equals("t_end"))
                     addError("Esta faltando um  ;");
             }                
             else
@@ -225,9 +236,11 @@ public class SyntaticAnalysis {
                     var = nextToken;
                 else 
                     semantic.checkLogic(var, la.getLineInformation()[0]);
+                nextToken(true);
+                attToken(var);
             }
-            
-            nextToken(true);
+            else            
+                nextToken(true);
         }
         else if(nextToken.getToken().equals("t_$"))
             t_relationalC();
@@ -256,8 +269,11 @@ public class SyntaticAnalysis {
                         var = nextToken;
                     else 
                         semantic.checkLogic(var, la.getLineInformation()[0]);
+                    nextToken(true);                    
+                    attToken(var);
                 }
-                nextToken(true);
+                else
+                    nextToken(true);
             }
             else if(nextToken.getToken().equals("t_$"))
                 t_relationalC();
@@ -300,6 +316,7 @@ public class SyntaticAnalysis {
                     var1 = nextToken;
                 
                 nextToken(true);
+                attToken(var1);
             
                 if(nextToken.getToken().equals("t_relational")) {
                     op = nextToken.getLexema();
@@ -316,7 +333,7 @@ public class SyntaticAnalysis {
                             semantic.checkRelational(var1, op, var2, la.getLineInformation()[0]);                        
                         
                         nextToken(true);
-                        
+                        attToken(var2);
                         if(nextToken.getToken().equals("t_$"))
                             nextToken(true);
                         else
@@ -555,16 +572,18 @@ public class SyntaticAnalysis {
     }
     
     private void nextToken(boolean flag) {
-        if(nextToken != null && flag)
+        if(nextToken != null && flag)          
             tokens.add(nextToken);
         nextToken = la.nextToken();
     }
     
-    private void removeToken(Token t) {
+    private void attToken(Token t) {
         List<Token> l = new ArrayList<>();
         for(Token tk : this.tokens) {
             if(!tk.getLexema().equals(t.getLexema()))
                 l.add(tk);
+            else
+                l.add(t);
         }
         this.tokens = l;
     }

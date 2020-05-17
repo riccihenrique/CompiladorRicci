@@ -1,0 +1,14 @@
+Léxico
+Sintático
+Semântico
+Geração do código intermediário
+Otimizações
+	- Trabalhar sempre com duas variáveis
+	- Não por código quando expressões forem resultar em false sempre
+	- Filtro nas operações aritmeticas (X  + 0 = X)
+Código de máquina:
+	- att
+	- if
+	- while
+	- for
+	- declarações

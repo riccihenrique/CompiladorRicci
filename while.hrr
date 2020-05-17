@@ -1,0 +1,14 @@
+ricci {
+    var [
+        numeric a;
+        bool b;
+    ]
+    a = 5;
+    b = true;
+    while(b) {
+        a = a + 1;
+        if($ a != 3 $) {
+            b = false;
+        }
+    }
+}

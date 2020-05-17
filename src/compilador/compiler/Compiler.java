@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Compiler {
     
-    private String code = "";
+    private String code = "", filename;
     private List<Error> errors;
     private SyntaticAnalysis sa;
     private CodeGenerator codeGenerator;
@@ -18,6 +18,7 @@ public class Compiler {
         errors = new ArrayList<>();
         String aux = "";
         File file = new File(filePath);
+        filename = file.getName();
         FileReader arq;
         try {
             arq = new FileReader(file);
@@ -44,11 +45,11 @@ public class Compiler {
             if(!sa.finished())
                 errors.add(new Error("O programa nao pode ser compilado", 1, 1));
             else {
-                codeGenerator = new CodeGenerator(sa.getTable());
+                codeGenerator = new CodeGenerator(sa.getTable(), filename);
                 codeGenerator.Analyze();
                 codeGenerator.generateCode();
             }
-        }       
+        }            
     }
     
     public List<Error> getErrors() {
@@ -56,7 +57,7 @@ public class Compiler {
     }
     
     public boolean finished() {
-        return sa.finished();
+        return errors.size() == 0;
     }
 
     public List<Token> getTableTokens() {

@@ -1,0 +1,12 @@
+ricci {
+    var [
+       numeric a, b;
+       bool b1, b2;
+    ]
+    b1 = true;
+    b2 = true;
+    if($ 2 < 3 $) {
+        a = 1;
+    }
+    b = 2;
+}

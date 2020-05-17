@@ -15,7 +15,7 @@ public class SemanticAlalysis {
         Token t = null;
         for(Token token : tokens) {
             if(token.getLexema().equals(newtoken.getLexema()))
-                t = token;
+                return token;
         }
         if(t == null)
             errors.add(new Error("Variável " + newtoken.getLexema() + " não declarada", line, 0));

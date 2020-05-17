@@ -36,7 +36,7 @@ public class SemanticAlalysis {
             try {
                 String s = ((String) value.getValue()).replace("\"", "");
                 if(id.getType().equals("numeric")) 
-                    id.setValue(Double.parseDouble(s));                
+                    id.setValue((Double.parseDouble(s) + ""));                
                 else if(id.getType().equals("string")) 
                     id.setValue(s);                
                 else if(id.getType().equals("char")) {
@@ -67,7 +67,7 @@ public class SemanticAlalysis {
             else if(id.getType().equals("numeric")) {
                 try {
                     double v = Double.parseDouble((String) value.getValue());
-                    id.setValue(v  + "");
+                    id.setValue((v  + ""));
                     flag = true;
                 }
                 catch(NumberFormatException e) {

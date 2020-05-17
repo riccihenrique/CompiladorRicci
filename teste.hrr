@@ -1,8 +1,0 @@
-ricci {
-    var [
-        numeric n, n2;
-    ]
-    
-    n = (cast) "123";
-    n2 = 1 + 5 + 8 + n * n;
-}

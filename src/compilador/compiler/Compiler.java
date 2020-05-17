@@ -46,6 +46,7 @@ public class Compiler {
             else {
                 codeGenerator = new CodeGenerator(sa.getTable());
                 codeGenerator.Analyze();
+                codeGenerator.generateCode();
             }
         }       
     }

@@ -65,6 +65,8 @@ public class LexicalAnalysis {
                         c = code.charAt(countLetters);
                    }
                 }
+                else
+                   return new Symbol().isReserved("/");
             }
             else if(c == '\n') { //Trata as quebras de linha para os contadores
                 countLetters++;

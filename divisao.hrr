@@ -1,0 +1,6 @@
+ricci {
+    var [
+        numeric n2;
+    ]
+    n2 = 3 % 5;
+}

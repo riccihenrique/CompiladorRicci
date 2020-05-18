@@ -1,0 +1,11 @@
+ricci {
+    var [
+        numeric a, r;
+    ]
+    a = 9;
+    r = a % 8;
+    while($ r != 0 $) {
+        a = a + 1;
+        r = a % 8;
+    }
+}

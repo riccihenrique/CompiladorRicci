@@ -126,30 +126,46 @@ public class CodeGenerator {
     }
     
     private void t_while() {
+        boolean isRelational = false;
         i += 2; // (
-        t = tokens.get(i++);
+        t = tokens.get(i);
         boolean flag;
-        if(t.getToken().equals("t_$"))  // relational
+        if(t.getToken().equals("t_$")) {  // relational
+            isRelational = true;
             flag = t_relational();
+        }
         else
             flag = t_logic();
         int aux_qtd = qtd_par, aux_line;
         
         qtd_par ++;
         if(flag) { // Executa a construção do conteúdo do if
-            addInFile("jmpEQ R2=R0, nextInstruction" + count_instruction);
+            int a = count_instruction++;
+            addInFile("load R1, 0");
+            addInFile("jmpEQ R1=R0, nextInstruction" + a);            
             aux_line = cont_lines;
             t = tokens.get(i);
-            if(t.getToken().equals("t_id"))
-                t_att();
-            else if(t.getToken().equals("t_for"))
-                t_for();
-            else if(t.getToken().equals("t_while")) 
-                t_while();
-            else if(t.getToken().equals("t_if"))
-                t_if();
-            addInFile("jmp " + Integer.toHexString(aux_line - 6) + "h");
-            addInFile("nextInstruction" + count_instruction + ":");
+            while(t.getToken().equals("t_id") || t.getToken().equals("t_if") && 
+                    t.getToken().equals("t_for") || t.getToken().equals("t_for")) {
+                if(t.getToken().equals("t_id")) {                
+                    t_att();
+                    i += 2;
+                    t = tokens.get(i);
+                }
+                if(t.getToken().equals("t_for")) {
+                    t_for();
+                    t = tokens.get(i++);
+                }                
+                if(t.getToken().equals("t_while")){
+                    t_while();
+                    t = tokens.get(i++);
+                }
+                if(t.getToken().equals("t_if")){ 
+                    t_if();
+                }
+            }
+            addInFile("jmp " + Integer.toHexString(aux_line - (isRelational ? 8 : 6)) + "h");
+            addInFile("nextInstruction" + a + ":");
             count_instruction++;
         } // Ignora todo o IF
         else
@@ -166,7 +182,7 @@ public class CodeGenerator {
         
     }
     
-    private boolean t_logic() {
+    private boolean t_logic() {        
         v1 = tokens.get(i++);
         boolean flag = false;
         if(tokens.get(i).getToken().equals("t_)")) // Apenas 1 expressão
@@ -206,14 +222,14 @@ public class CodeGenerator {
     }
     
     private boolean t_relational() {
-        v1 = tokens.get(i++);
+        v1 = tokens.get(++i);
         if(v1.getToken().equals("t_id"))
             addInFile("load R1, [" + getPosition(vars, v1.getLexema()) + "]");
         else
             addInFile("load R1, " + ((int) Double.parseDouble(v1.getLexema())));
 
-        op = tokens.get(i++);
-        v2 = tokens.get(i++);
+        op = tokens.get(++i);
+        v2 = tokens.get(++i);
         if(v2.getToken().equals("t_id"))
             addInFile("load R2, [" + getPosition(vars, v2.getLexema()) + "]");
         else
@@ -239,7 +255,7 @@ public class CodeGenerator {
             addInFile("and R0, R1, R2");
         }
         else if(op.getLexema().equals("!=")) {
-            addInFile("and R0, R1, R2");
+            addInFile("xor R0, R1, R2");
         }
         else if(op.getLexema().equals("<=")) {
 
@@ -253,14 +269,14 @@ public class CodeGenerator {
         else if(op.getLexema().equals(">")) {
             
         }
-        i += 3; // $ ) {
+        i += 4; // $ ) {
         return true;
     }
     
     private void t_att() {
-        t_rec = t;
+        t_rec = tokens.get(i++);
         i++; // = 
-        v1 = tokens.get(++i);
+        v1 = tokens.get(i);
 
         if(v1.getToken().equals("t_(")) {                    
             i += 3;
@@ -341,8 +357,8 @@ public class CodeGenerator {
     }
     
     private void t_if() {
-        i += 1; // (
-        t = tokens.get(i++);
+        i += 2; // (
+        t = tokens.get(i);
         boolean flag;
         if(t.getToken().equals("t_$"))  // relational
             flag = t_relational();
@@ -351,7 +367,8 @@ public class CodeGenerator {
         int aux_qtd = qtd_par;
         qtd_par ++;
         if(flag) { // Executa a construção do conteúdo do if
-            addInFile("jmpEQ R1=R0, nextInstruction" + count_instruction);
+            int a = count_instruction;
+            addInFile("jmpEQ R1=R0, nextInstruction" + a);
             t = tokens.get(i);
             if(t.getToken().equals("t_id"))
                 t_att();
@@ -361,7 +378,7 @@ public class CodeGenerator {
                 t_while();
             else if(t.getToken().equals("t_if"))
                 t_if();
-            addInFile("nextInstruction" + count_instruction + ":");
+            addInFile("nextInstruction" + a + ":");                        
             count_instruction++;
         } // Ignora todo o IF
         else
@@ -414,9 +431,9 @@ public class CodeGenerator {
                     t = tokens.get(i);
                 }
                 
-                addInFile("org 60h");
+                addInFile("org 30h");
                 addInFile("load RF, -1");
-                cont_lines = 96;
+                cont_lines = 48;
            }
            else if(t.getToken().equals("t_if")) {
               t_if();

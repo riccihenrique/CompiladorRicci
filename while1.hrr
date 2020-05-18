@@ -3,12 +3,9 @@ ricci {
         numeric a;
         bool b;
     ]
-    a = 5;
+    a = 1;
     b = true;
-    while(b) {
+    while($a != 9 $) {
         a = a + 1;
-        if($ a != 3 $) {
-            b = false;
-        }
     }
 }

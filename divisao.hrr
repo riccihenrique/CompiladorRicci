@@ -2,5 +2,5 @@ ricci {
     var [
         numeric n2;
     ]
-    n2 = 3 % 5;
+    n2 = 5 / 3;
 }

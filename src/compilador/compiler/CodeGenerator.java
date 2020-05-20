@@ -164,7 +164,6 @@ public class CodeGenerator {
                     t.getToken().equals("t_for") || t.getToken().equals("t_for")) {
                 if(t.getToken().equals("t_id")) {                
                     t_att();
-                    i += 2;
                     t = tokens.get(i);
                 }
                 if(t.getToken().equals("t_for")) {
@@ -198,12 +197,10 @@ public class CodeGenerator {
         i += 2; // (
         t = tokens.get(i);
         t_att();
-        writer.println("jmp for" + aux_for);
-        i++; // ;        
+        writer.println("jmp for" + aux_for);  
         t = tokens.get(i);        
         aux_line = cont_lines;
         t_att();
-        i += 2;
         t = tokens.get(i);        
         writer.println("for" + aux_for + ":"); count_for++;
         boolean flag;
@@ -223,7 +220,6 @@ public class CodeGenerator {
                     t.getToken().equals("t_for") || t.getToken().equals("t_for")) {
                 if(t.getToken().equals("t_id")) {                
                     t_att();
-                    i += 2;
                     t = tokens.get(i);
                 }
                 if(t.getToken().equals("t_for")) {
@@ -300,6 +296,7 @@ public class CodeGenerator {
 
         op = tokens.get(++i);
         v2 = tokens.get(++i);
+        i += 4; // $ ) {
         if(v2.getToken().equals("t_id"))
             addInFile("load R2, [" + getPosition(vars, v2.getLexema()) + "]");
         else
@@ -310,13 +307,13 @@ public class CodeGenerator {
                 return false;
             else if(op.getLexema().equals("!=") && v2.getLexema().equals(v1.getLexema()))
                 return false;
-            else if(op.getLexema().equals("<") && Integer.parseInt(v1.getLexema()) >= Integer.parseInt(v2.getLexema()))
+            else if(op.getLexema().equals("<") && Double.parseDouble(v1.getLexema()) >= Double.parseDouble(v2.getLexema()))
                 return false;
-            else if(op.getLexema().equals("<=") && Integer.parseInt(v1.getLexema()) > Integer.parseInt(v2.getLexema()))
+            else if(op.getLexema().equals("<=") && Double.parseDouble(v1.getLexema()) > Double.parseDouble(v2.getLexema()))
                 return false;
-            else if(op.getLexema().equals(">") && Integer.parseInt(v1.getLexema()) <= Integer.parseInt(v2.getLexema()))
+            else if(op.getLexema().equals(">") && Double.parseDouble(v1.getLexema()) <= Double.parseDouble(v2.getLexema()))
                 return false;
-            else if(op.getLexema().equals(">=") && Integer.parseInt(v1.getLexema()) < Integer.parseInt(v2.getLexema()))
+            else if(op.getLexema().equals(">=") && Double.parseDouble(v1.getLexema()) < Double.parseDouble(v2.getLexema()))
                 return false;
         }
         
@@ -339,7 +336,6 @@ public class CodeGenerator {
         else if(op.getLexema().equals(">")) {
             
         }
-        i += 4; // $ ) {
         return true;
     }
     
@@ -363,7 +359,7 @@ public class CodeGenerator {
                 else {                                
                     for(int j = 0; j < ((String) v1.getValue()).length(); j++) {                            
                         addInFile("load R1, \"" + ((String) v1.getValue()).charAt(j) + "\"");
-                        addInFile("store R1, [" + (Integer.parseInt(pos) + j) + "]");
+                        addInFile("store R1, [" + (Double.parseDouble(pos) + j) + "]");
                     }
                 }
             }
@@ -374,7 +370,7 @@ public class CodeGenerator {
                 else            
                 { // Operation
                     v2 = tokens.get(++i);
-
+                    i++;
                     if(v1.getToken().equals("t_id"))    
                         addInFile("load R2, [" + getPosition(vars, v1.getLexema()) + "]");
                     else
@@ -395,36 +391,33 @@ public class CodeGenerator {
                         addInFile("addi R1, R2, R3");                        
                     }
                     else if(op.getLexema().equals("*")) {
-                        addInFile("load R0, 2");                        
+                        addInFile("load R0, 1");
                         addInFile("load R5, 1");
                         addInFile("move R6, R3");
-                        addInFile("addi R0, R0, RF");
-                        int pos_aux = cont_lines;                        
-                        addInFile("jmpLE R2<=R0, " + Integer.toHexString(pos_aux + 8) + "h");
+                        int pos_aux = cont_lines;
+                        addInFile("jmpLE R2<=R0, " + Integer.toHexString(pos_aux + 10) + "h");
                         addInFile("addi R3, R3, R6");
-                        addInFile("addi R4, R4, R5");
+                        addInFile("addi R0, R0, R5");
+                        addInFile("jmp " + Integer.toHexString(pos_aux + 2) + "h");
                         addInFile("move R1, R3");
                     }
                     else {
-                        addInFile("load R5, 255");
-                        addInFile("xor R4, R3, R5");  
-                        addInFile("load R6, 1");
-                        addInFile("load R7, 0");
-                        addInFile("addi R4, R4, R6");
+                        addInFile("xor R4, R3, RF");                        
+                        addInFile("load R5, 1");
+                        addInFile("addi R4, R4, R5");
                         addInFile("move R0, R3");
                         addInFile("addi R0, R0, RF");
+                        addInFile("load R6, 0");
                         int pos_aux = cont_lines; 
-                        addInFile("jmpLE R2 <= R0, " +  Integer.toHexString(pos_aux + 12) + "h");
-                        pos_aux = cont_lines;                        
+                        addInFile("jmpLE R2 <= R0, " + Integer.toHexString(pos_aux + 10) + "h");                     
                         addInFile("addi R2, R2, R4");
-                        addInFile("move R0, R2");
-                        addInFile("addi R7, R7, R6");
-                        addInFile("jmpLE R3<=R0, " + Integer.toHexString(pos_aux + 2) + "h");
+                        addInFile("addi R6, R6, R5");
+                        addInFile("jmp " + Integer.toHexString(pos_aux + 2) + "h");
 
-                        addInFile("move R1, " + (op.getLexema().equals("/") ? "R7" : "R2"));
+                        addInFile("move R1, " + (op.getLexema().equals("/") ? "R6" : "R2"));
                     }
                 }
-            }    
+            }
         }
         else {
             addInFile("load R2, [" + getPosition(vars, t_rec.getLexema()) + "]");
@@ -434,9 +427,9 @@ public class CodeGenerator {
                 addInFile("load R3, 1");
                 addInFile("addi R1, R2, R3");
             }
-            i--;
         }        
         addInFile("store R1, [" + getPosition(vars, t_rec.getLexema()) + "]");
+        i++; // ;
     }
     
     private void t_if() {
@@ -475,7 +468,7 @@ public class CodeGenerator {
     }
     
     public void generateCode() {        
-        for(i = 0; i < tokens.size(); i++) {
+        for(i = 0; i < tokens.size();) {
             t = tokens.get(i);
             if(t.getToken().equals("t_var")) {
                 i += 2;
@@ -530,6 +523,8 @@ public class CodeGenerator {
            else if(t.getToken().equals("t_id")) { // Atributtion
                 t_att();
            }
+           else
+               i++;
         }
         addInFile("halt");
         writer.close();

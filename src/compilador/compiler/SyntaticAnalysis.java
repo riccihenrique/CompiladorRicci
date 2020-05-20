@@ -453,6 +453,8 @@ public class SyntaticAnalysis {
                         
                         if(first.getT_attribution().contains(nextToken.getToken())) {   
                             t_att();
+                            if(nextToken.getToken().equals("t_end"))
+                                nextToken(true);
                             if(nextToken.getToken().equals("t_)")) {
                                 nextToken(true);
 

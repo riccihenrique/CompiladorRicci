@@ -1,0 +1,7 @@
+ricci {
+    var [
+        numeric a;
+    ]
+    a = 4;
+    a--;
+}

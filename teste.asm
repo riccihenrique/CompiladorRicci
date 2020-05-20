@@ -1,13 +1,9 @@
 db 0
-db 0
-org 60h
+org 30h
 load RF, -1
-load R1, null
-load R0, 1
-jmpEQ R1=R0, nextInstruction0:
-load R1, 1
+load R1, 4
 store R1, [0]
-nextInstruction0
-load R1, 2
-store R1, [1]
+load R2, [0]
+addi R1, R2, Rf
+store R1, [0]
 halt

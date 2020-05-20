@@ -14,11 +14,10 @@ public class CodeGenerator {
     private List<Token> tokens;
     private FileWriter file = null;
     private PrintWriter writer;
-    private int position = 0, cont_lines = 60, i, qtd_par = 0, count_instruction = 0;
+    private int position = 0, cont_lines = 60, i, qtd_par = 0, count_instruction = 0, count_for = 0;
     private List<Variable> vars = new ArrayList<>();
     private Token t, t_rec, v1, op, v2;
-    private List<Token> param = new ArrayList<>();
-   
+
     public CodeGenerator(List<Token> tokens, String name) {
         this.tokens  = tokens;
         try {
@@ -75,9 +74,9 @@ public class CodeGenerator {
                             flag = true;
                     }
                     
-                    if(!flag) {
+                    if(!flag)
                         aux_tks.add(tokens.get(i));
-                    }
+                    
                     
                     while(aux_tks.size() > 2) {
                         Token newTk = new Token("t_id", "ta_" + label_varaux);
@@ -116,19 +115,35 @@ public class CodeGenerator {
                     }
                     newTokens.add(tokens.get(i));
                 }
-                    
+            }
+            else if(tokens.get(i).getToken().equals("t_for")) {
+                while(!tokens.get(i).getToken().equals("t_end"))
+                    newTokens.add(tokens.get(i++));
+                newTokens.add(tokens.get(i++));
+                int j = i;
+                while(!tokens.get(j).getToken().equals("t_end"))
+                    j++;
+                j++;
+                int k = j;
+                while(!tokens.get(k).getToken().equals("t_end"))
+                    newTokens.add(tokens.get(k++));
+                newTokens.add(tokens.get(k++));
+                
+               while(!tokens.get(i).getToken().equals("t_end"))
+                   newTokens.add(tokens.get(i++));
+               newTokens.add(tokens.get(i));
+               i = k - 1;
             }
             else
                 newTokens.add(tokens.get(i));
         }
-        
         this.tokens = newTokens;
     }
     
     private void t_while() {
         boolean isRelational = false;
         i += 2; // (
-        t = tokens.get(i);
+        t = tokens.get(i);        
         boolean flag;
         if(t.getToken().equals("t_$")) {  // relational
             isRelational = true;
@@ -156,11 +171,11 @@ public class CodeGenerator {
                     t_for();
                     t = tokens.get(i++);
                 }                
-                if(t.getToken().equals("t_while")){
+                if(t.getToken().equals("t_while")) {
                     t_while();
                     t = tokens.get(i++);
                 }
-                if(t.getToken().equals("t_if")){ 
+                if(t.getToken().equals("t_if")) { 
                     t_if();
                 }
             }
@@ -179,7 +194,62 @@ public class CodeGenerator {
     }
     
     private void t_for() {
+        int aux_qtd = qtd_par, aux_line, aux_for = count_for;
+        i += 2; // (
+        t = tokens.get(i);
+        t_att();
+        writer.println("jmp for" + aux_for);
+        i++; // ;        
+        t = tokens.get(i);        
+        aux_line = cont_lines;
+        t_att();
+        i += 2;
+        t = tokens.get(i);        
+        writer.println("for" + aux_for + ":"); count_for++;
+        boolean flag;
+        if(t.getToken().equals("t_$"))   // relational
+            flag = t_relational();
+        else
+            flag = t_logic();
         
+        qtd_par ++;
+        if(flag) { // Executa a construção do conteúdo do if
+            int a = count_instruction++;
+            addInFile("load R1, 0");
+            addInFile("jmpEQ R1=R0, nextInstruction" + a);
+            i++;
+            t = tokens.get(i);
+            while(t.getToken().equals("t_id") || t.getToken().equals("t_if") && 
+                    t.getToken().equals("t_for") || t.getToken().equals("t_for")) {
+                if(t.getToken().equals("t_id")) {                
+                    t_att();
+                    i += 2;
+                    t = tokens.get(i);
+                }
+                if(t.getToken().equals("t_for")) {
+                    t_for();
+                    t = tokens.get(i++);
+                }                
+                if(t.getToken().equals("t_while")) {
+                    t_while();
+                    t = tokens.get(i++);
+                }
+                if(t.getToken().equals("t_if")) { 
+                    t_if();
+                }
+            }
+            addInFile("jmp " + Integer.toHexString(aux_line + 4) + "h");
+            addInFile("nextInstruction" + a + ":");
+            count_instruction++;
+        } // Ignora todo o IF
+        else
+            while(qtd_par > aux_qtd) {
+                if(tokens.get(i).getToken().equals("t_{"))
+                    qtd_par ++;
+                else if(tokens.get(i).getToken().equals("t_}"))
+                    qtd_par --;
+                i++;
+            }
     }
     
     private boolean t_logic() {        
@@ -275,85 +345,98 @@ public class CodeGenerator {
     
     private void t_att() {
         t_rec = tokens.get(i++);
-        i++; // = 
-        v1 = tokens.get(i);
-
-        if(v1.getToken().equals("t_(")) {                    
-            i += 3;
+        op = tokens.get(i++); // = 
+        if(op.getLexema().equals("=")) {
             v1 = tokens.get(i);
-        }
 
-        if(!v1.getType().equals("numeric")) {
-            String pos = getPosition(vars, t_rec.getLexema());
-            if(t_rec.getType().equals("bool")) {
-                addInFile("load R1, " + (v1.getLexema().equals("true") ? 1 : 0));
-                addInFile("store R1, [" + pos + "]");
+            if(v1.getToken().equals("t_(")) {                    
+                i += 3;
+                v1 = tokens.get(i);
             }
-            else {                                
-                for(int j = 0; j < ((String) v1.getValue()).length(); j++) {                            
-                    addInFile("load R1, \"" + ((String) v1.getValue()).charAt(j) + "\"");
-                    addInFile("store R1, [" + (Integer.parseInt(pos) + j) + "]");
+
+            if(!v1.getType().equals("numeric")) {
+                String pos = getPosition(vars, t_rec.getLexema());
+                if(t_rec.getType().equals("bool")) {
+                    addInFile("load R1, " + (v1.getLexema().equals("true") ? 1 : 0));
+                    addInFile("store R1, [" + pos + "]");
+                }
+                else {                                
+                    for(int j = 0; j < ((String) v1.getValue()).length(); j++) {                            
+                        addInFile("load R1, \"" + ((String) v1.getValue()).charAt(j) + "\"");
+                        addInFile("store R1, [" + (Integer.parseInt(pos) + j) + "]");
+                    }
                 }
             }
+            else {
+                op = tokens.get(++i);
+                if(!op.getToken().equals("t_op"))  // Simple Atributtion  
+                    addInFile("load R1, " + ((int) Double.parseDouble(t_rec.getValue() + "")));
+                else            
+                { // Operation
+                    v2 = tokens.get(++i);
+
+                    if(v1.getToken().equals("t_id"))    
+                        addInFile("load R2, [" + getPosition(vars, v1.getLexema()) + "]");
+                    else
+                        addInFile("load R2, " + ((int) Double.parseDouble(v1.getLexema())));
+
+                    if(v2.getToken().equals("t_id"))
+                        addInFile("load R3, [" + getPosition(vars, v2.getLexema()) + "]");
+                    else
+                        addInFile("load R3, " + ((int) Double.parseDouble(v2.getLexema())));
+
+                    if(op.getLexema().equals("-")) {
+                        addInFile("load R4, 1");
+                        addInFile("xor R3, R3, RF");
+                        addInFile("addi R3, R3, R4");
+                    }
+
+                    if(op.getLexema().equals("+") || op.getLexema().equals("-")) {                    
+                        addInFile("addi R1, R2, R3");                        
+                    }
+                    else if(op.getLexema().equals("*")) {
+                        addInFile("load R0, 2");                        
+                        addInFile("load R5, 1");
+                        addInFile("move R6, R3");
+                        addInFile("addi R0, R0, RF");
+                        int pos_aux = cont_lines;                        
+                        addInFile("jmpLE R2<=R0, " + Integer.toHexString(pos_aux + 8) + "h");
+                        addInFile("addi R3, R3, R6");
+                        addInFile("addi R4, R4, R5");
+                        addInFile("move R1, R3");
+                    }
+                    else {
+                        addInFile("load R5, 255");
+                        addInFile("xor R4, R3, R5");  
+                        addInFile("load R6, 1");
+                        addInFile("load R7, 0");
+                        addInFile("addi R4, R4, R6");
+                        addInFile("move R0, R3");
+                        addInFile("addi R0, R0, RF");
+                        int pos_aux = cont_lines; 
+                        addInFile("jmpLE R2 <= R0, " +  Integer.toHexString(pos_aux + 12) + "h");
+                        pos_aux = cont_lines;                        
+                        addInFile("addi R2, R2, R4");
+                        addInFile("move R0, R2");
+                        addInFile("addi R7, R7, R6");
+                        addInFile("jmpLE R3<=R0, " + Integer.toHexString(pos_aux + 2) + "h");
+
+                        addInFile("move R1, " + (op.getLexema().equals("/") ? "R7" : "R2"));
+                    }
+                }
+            }    
         }
         else {
-            op = tokens.get(++i);
-            if(!op.getToken().equals("t_op"))  // Simple Atributtion  
-                addInFile("load R1, " + ((int) Double.parseDouble(t_rec.getValue() + "")));
-            else { // Operation
-                v2 = tokens.get(++i);
-
-                if(v1.getToken().equals("t_id"))    
-                    addInFile("load R2, [" + getPosition(vars, v1.getLexema()) + "]");
-                else
-                    addInFile("load R2, " + ((int) Double.parseDouble(v1.getLexema())));
-
-                if(v2.getToken().equals("t_id"))
-                    addInFile("load R3, [" + getPosition(vars, v2.getLexema()) + "]");
-                else
-                    addInFile("load R3, " + ((int) Double.parseDouble(v2.getLexema())));
-
-                if(op.getLexema().equals("-")) {
-                    addInFile("load R4, 1");
-                    addInFile("xor R3, R3, RF");
-                    addInFile("addi R3, R3, R4");
-                }
-
-                if(op.getLexema().equals("+") || op.getLexema().equals("-")) {                    
-                    addInFile("addi R1, R2, R3");                        
-                }
-                else if(op.getLexema().equals("*")) {
-                    addInFile("load R0, 2");                        
-                    addInFile("load R5, 1");
-                    addInFile("move R6, R3");
-                    addInFile("addi R0, R0, RF");
-                    int pos_aux = cont_lines;                        
-                    addInFile("jmpLE R2<=R0, " + Integer.toHexString(pos_aux + 8) + "h");
-                    addInFile("addi R3, R3, R6");
-                    addInFile("addi R4, R4, R5");
-                    addInFile("move R1, R3");
-                }
-                else {
-                    addInFile("load R5, 255");
-                    addInFile("xor R4, R3, R5");  
-                    addInFile("load R6, 1");
-                    addInFile("load R7, 0");
-                    addInFile("addi R4, R4, R6");
-                    addInFile("move R0, R3");
-                    addInFile("addi R0, R0, RF");
-                    int pos_aux = cont_lines; 
-                    addInFile("jmpLE R2 <= R0, " +  Integer.toHexString(pos_aux + 12) + "h");
-                    pos_aux = cont_lines;                        
-                    addInFile("addi R2, R2, R4");
-                    addInFile("move R0, R2");
-                    addInFile("addi R7, R7, R6");
-                    addInFile("jmpLE R3<=R0, " + Integer.toHexString(pos_aux + 2) + "h");
-
-                    addInFile("move R1, " + (op.getLexema().equals("/") ? "R7" : "R2"));
-                }
+            addInFile("load R2, [" + getPosition(vars, t_rec.getLexema()) + "]");
+            if(op.getLexema().equals("--")) 
+                addInFile("addi R1, R2, Rf");
+            else {
+                addInFile("load R3, 1");
+                addInFile("addi R1, R2, R3");
             }
-            addInFile("store R1, [" + getPosition(vars, t_rec.getLexema()) + "]");
-        }
+            i--;
+        }        
+        addInFile("store R1, [" + getPosition(vars, t_rec.getLexema()) + "]");
     }
     
     private void t_if() {

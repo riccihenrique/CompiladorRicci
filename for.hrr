@@ -1,0 +1,9 @@
+ricci {
+    var [
+        numeric a;
+    ]
+
+    for(a = 1; $ a != 7 $; a++;) {
+        a = a + 1;
+    }
+}

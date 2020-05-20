@@ -36,20 +36,25 @@ public class Compiler {
     }
     
     public void Compile() {
-        sa = new SyntaticAnalysis(code);
-        sa.Analyse();
-       
-        errors.addAll(sa.getErrors());        
-        
-        if(errors.isEmpty()) {
-            if(!sa.finished())
-                errors.add(new Error("O programa nao pode ser compilado", 1, 1));
-            else {
-                codeGenerator = new CodeGenerator(sa.getTable(), filename);
-                codeGenerator.Analyze();
-                codeGenerator.generateCode();
+        try {
+            sa = new SyntaticAnalysis(code);
+            sa.Analyse();
+
+            errors.addAll(sa.getErrors());        
+
+            if(errors.isEmpty()) {
+                if(!sa.finished())
+                    errors.add(new Error("O programa nao pode ser compilado", 1, 1));
+                else {
+                    codeGenerator = new CodeGenerator(sa.getTable(), filename);
+                    codeGenerator.Analyze();
+                    codeGenerator.generateCode();
+                }
             }
-        }            
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
     public List<Error> getErrors() {
@@ -57,7 +62,7 @@ public class Compiler {
     }
     
     public boolean finished() {
-        return errors.size() == 0;
+        return errors.isEmpty();
     }
 
     public List<Token> getTableTokens() {

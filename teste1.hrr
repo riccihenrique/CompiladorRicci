@@ -1,0 +1,12 @@
+ricci {
+    var [
+        numeric n1, n2;
+        string s1;
+        bool b1;
+    ]
+    b1 = false;
+    n2 = 2;
+    if($ n2 != 2 $) {    
+        n1 = 1;
+    }
+}

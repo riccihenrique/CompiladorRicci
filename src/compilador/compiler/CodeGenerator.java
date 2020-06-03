@@ -75,8 +75,7 @@ public class CodeGenerator {
                     }
                     
                     if(!flag)
-                        aux_tks.add(tokens.get(i));
-                    
+                        aux_tks.add(tokens.get(i));                    
                     
                     while(aux_tks.size() > 2) {
                         Token newTk = new Token("t_id", "ta_" + label_varaux);

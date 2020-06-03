@@ -66,6 +66,6 @@ public class Compiler {
     }
 
     public List<Token> getTableTokens() {
-        return codeGenerator.getTokens();
+        return sa.getTable();
     }
 }

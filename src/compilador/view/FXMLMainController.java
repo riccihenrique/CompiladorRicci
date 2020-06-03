@@ -230,7 +230,7 @@ private TabPane tbpFiles;
         taTabela.setText(msg);
         
         msg = "";
-        if(compiler.finished() && err.isEmpty())
+        if(err.isEmpty())
             msg = "Compilaçao executada com sucesso!!!!!!";
         else
             for(Error e : err)
